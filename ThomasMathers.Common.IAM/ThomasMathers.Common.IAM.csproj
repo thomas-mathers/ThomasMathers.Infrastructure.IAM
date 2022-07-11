@@ -5,6 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/thomas-mathers/ThomasMathers.Common.IAM/tree/master/ThomasMathers.Common.IAM</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Authentication;Authorization;IAM</PackageTags>
+    <Authors>tmathers</Authors>
+    <PackageProjectUrl>https://github.com/thomas-mathers/ThomasMathers.Common.IAM/tree/master/ThomasMathers.Common.IAM</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
