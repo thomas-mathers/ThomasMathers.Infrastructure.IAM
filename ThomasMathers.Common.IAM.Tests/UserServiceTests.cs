@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Requests;
 using ThomasMathers.Common.IAM.Services;
 using System.Threading.Tasks;
 using Xunit;
@@ -12,8 +11,8 @@ namespace ThomasMathers.Common.IAM.Tests
     {
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly UserService _sut;
-        private const string username = "USERNAME001";
-        private const string password = "PASSWORD001";
+        private readonly User _user = new() { UserName = "USERNAME001" };
+        private const string _password = "PASSWORD001";
 
         public UserServiceTests()
         {
@@ -35,15 +34,11 @@ namespace ThomasMathers.Common.IAM.Tests
             };
 
             _userManagerMock
-                .Setup(x => x.CreateAsync(It.IsAny<User>(), password))
+                .Setup(x => x.CreateAsync(It.IsAny<User>(), _password))
                 .ReturnsAsync(IdentityResult.Failed(errors));
 
             // Act
-            var result = await _sut.Register(new RegisterRequest
-            {
-                UserName = username,
-                Password = password,
-            });
+            var result = await _sut.Register(_user, _password);
 
             // Assert
             Assert.Equal(0, result.Index);
@@ -55,15 +50,11 @@ namespace ThomasMathers.Common.IAM.Tests
         {
             // Arrange
             _userManagerMock
-                .Setup(x => x.CreateAsync(It.IsAny<User>(), password))
+                .Setup(x => x.CreateAsync(It.IsAny<User>(), _password))
                 .ReturnsAsync(IdentityResult.Success);
 
             // Act
-            var result = await _sut.Register(new RegisterRequest
-            {
-                UserName = username,
-                Password = password,
-            });
+            var result = await _sut.Register(_user, _password);
 
             // Assert
             Assert.Equal(1, result.Index);

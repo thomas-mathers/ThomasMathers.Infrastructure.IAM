@@ -7,11 +7,22 @@ using ThomasMathers.Common.IAM.Settings;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ThomasMathers.Common.IAM.Extensions
 {
     public static class IServiceCollectionExtensions
     {
+        public static void AddIAM(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddIAM(configuration.GetRequiredSection("IAMSettings"));
+        }
+
+        public static void AddIAM(this IServiceCollection services, IConfigurationSection configurationSection)
+        {
+            services.AddIAM(IAMSettings.FromConfigurationSection(configurationSection));
+        }
+
         public static void AddIAM(this IServiceCollection services, IAMSettings iamSettings)
         {
             if (string.IsNullOrEmpty(iamSettings.ConnectionString))

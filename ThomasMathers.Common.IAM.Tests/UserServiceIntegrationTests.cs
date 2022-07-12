@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Requests;
 using ThomasMathers.Common.IAM.Services;
-using ThomasMathers.Common.IAM.Settings;
 using ThomasMathers.Common.IAM.Tests.Comparers;
 using ThomasMathers.Common.IAM.Tests.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -23,7 +19,9 @@ namespace ThomasMathers.Common.IAM.Tests
         private const string _email1 = "thomas.mathers.pro@gmail.com";
         private const string _email2 = "mathers_thomas@hotmail.com";
         private const string _password = "P@sSw0rd1!";
-        private readonly User _user = new() { UserName = _username1, Email = _email1 };
+        private readonly User _user1 = new() { UserName = _username1, Email = _email1 };
+        private readonly User _user2 = new() { UserName = _username1, Email = _email2 };
+        private readonly User _user3 = new() { UserName = _username2, Email = _email1 };
 
         public UserServiceIntegrationTests()
         {
@@ -50,12 +48,7 @@ namespace ThomasMathers.Common.IAM.Tests
             };
 
             // Act
-            var registerResponse = await _sut.Register(new RegisterRequest
-            {
-                UserName = _username1,
-                Email = email,
-                Password = _password
-            });
+            var registerResponse = await _sut.Register(new User { UserName = _username1, Email = email  }, _password);
 
             // Assert
             Assert.NotNull(registerResponse);
@@ -79,12 +72,7 @@ namespace ThomasMathers.Common.IAM.Tests
             };
 
             // Act
-            var registerResponse = await _sut.Register(new RegisterRequest
-            {
-                UserName = username,
-                Email = _email1,
-                Password = _password
-            });
+            var registerResponse = await _sut.Register(new User { UserName = username, Email = _email1 }, _password);
 
             // Assert
             Assert.NotNull(registerResponse);
@@ -102,7 +90,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task Register_InvalidPassword_ReturnsIdentityErrorResponse(string password, string expectedValidationError)
         {
             // Arrange
-            await _userManager.CreateAsync(_user, _password);
+            await _userManager.CreateAsync(_user1, _password);
 
             var expectedErrors = new List<IdentityError>
             {
@@ -113,12 +101,7 @@ namespace ThomasMathers.Common.IAM.Tests
             };
 
             // Act
-            var registerResponse = await _sut.Register(new RegisterRequest
-            {
-                UserName = _username1,
-                Email = _email1,
-                Password = password
-            });
+            var registerResponse = await _sut.Register(_user1, password);
 
             // Assert
             Assert.NotNull(registerResponse);
@@ -130,7 +113,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task Register_DuplicateUserName_ReturnsIdentityErrorResponse()
         {
             // Arrange
-            await _userManager.CreateAsync(_user, _password);
+            await _userManager.CreateAsync(_user1, _password);
 
             var expectedErrors = new List<IdentityError>
             {
@@ -141,12 +124,7 @@ namespace ThomasMathers.Common.IAM.Tests
             };
 
             // Act
-            var registerResponse = await _sut.Register(new RegisterRequest
-            {
-                UserName = _username1,
-                Email = _email2,
-                Password = _password
-            });
+            var registerResponse = await _sut.Register(_user2, _password);
 
             // Assert
             Assert.NotNull(registerResponse);
@@ -158,7 +136,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task Register_DuplicateEmail_ReturnsIdentityErrorResponse()
         {
             // Arrange
-            await _userManager.CreateAsync(_user, _password);
+            await _userManager.CreateAsync(_user1, _password);
 
             var expectedErrors = new List<IdentityError>
             {
@@ -169,12 +147,7 @@ namespace ThomasMathers.Common.IAM.Tests
             };
 
             // Act
-            var registerResponse = await _sut.Register(new RegisterRequest
-            {
-                UserName = _username2,
-                Email = _email1,
-                Password = _password
-            });
+            var registerResponse = await _sut.Register(_user3, _password);
 
             // Assert
             Assert.NotNull(registerResponse);
@@ -186,12 +159,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task Register_Valid_ReturnsSuccessResponse()
         {
             // Act
-            var registerResponse = await _sut.Register(new RegisterRequest
-            {
-                UserName = _username1,
-                Email = _email1,
-                Password = _password
-            });
+            var registerResponse = await _sut.Register(_user1, _password);
 
             // Assert
             Assert.NotNull(registerResponse);

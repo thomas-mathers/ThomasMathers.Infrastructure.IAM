@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Requests;
 using ThomasMathers.Common.IAM.Responses;
 
 namespace ThomasMathers.Common.IAM.Services
 {
     public interface IAuthService
     {
-        Task<LoginResponse> Login(LoginRequest loginRequest);
-        Task<ChangePasswordResponse> ChangePassword(ChangePasswordRequest changePasswordRequest);
+        Task<LoginResponse> Login(string userName, string password);
+        Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token, string newPassword);
         Task<string> GeneratePasswordResetToken(User user);
     }
 
@@ -25,16 +24,16 @@ namespace ThomasMathers.Common.IAM.Services
             _accessTokenGenerator = accessTokenGenerator;
         }
 
-        public async Task<LoginResponse> Login(LoginRequest loginRequest)
+        public async Task<LoginResponse> Login(string userName, string password)
         {
-            var user = await _userManager.FindByNameAsync(loginRequest.UserName);
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null)
             {
                 return new NotFoundResponse();
             }
 
-            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, true);
+            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, true);
 
             if (!signInResult.Succeeded)
             {
@@ -61,21 +60,21 @@ namespace ThomasMathers.Common.IAM.Services
             return new LoginSuccessResponse(user.Id, user.UserName, user.Email, _accessTokenGenerator.GenerateAccessToken(claims));
         }
 
-        public async Task<ChangePasswordResponse> ChangePassword(ChangePasswordRequest changePasswordRequest)
+        public async Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token, string newPassword)
         {
-            var user = await _userManager.FindByNameAsync(changePasswordRequest.UserName);
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null)
             {
                 return new NotFoundResponse();
             }
 
-            if (!string.IsNullOrEmpty(changePasswordRequest.CurrentPassword))
+            if (!string.IsNullOrEmpty(currentPassword))
             {
                 var changePasswordResult = await _userManager.ChangePasswordAsync(
                     user,
-                    changePasswordRequest.CurrentPassword,
-                    changePasswordRequest.NewPassword);
+                    currentPassword,
+                    newPassword);
 
                 if (!changePasswordResult.Succeeded)
                 {
@@ -85,7 +84,7 @@ namespace ThomasMathers.Common.IAM.Services
                 return new ChangePasswordSuccessResponse();
             }
 
-            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, changePasswordRequest.Token, changePasswordRequest.NewPassword);
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
 
             if (!resetPasswordResult.Succeeded)
             {

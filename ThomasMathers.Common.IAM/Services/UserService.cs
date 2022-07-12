@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Requests;
 using ThomasMathers.Common.IAM.Responses;
 
 namespace ThomasMathers.Common.IAM.Services
@@ -8,7 +7,7 @@ namespace ThomasMathers.Common.IAM.Services
     public interface IUserService
     {
         Task<User> GetUserByUserName(string userName);
-        Task<RegisterResponse> Register(RegisterRequest registerRequest);
+        Task<RegisterResponse> Register(User user, string password);
     }
 
     public class UserService : IUserService
@@ -25,15 +24,9 @@ namespace ThomasMathers.Common.IAM.Services
             return _userManager.FindByNameAsync(userName);
         }
 
-        public async Task<RegisterResponse> Register(RegisterRequest registerRequest)
+        public async Task<RegisterResponse> Register(User user, string password)
         {
-            var user = new User
-            {
-                UserName = registerRequest.UserName,
-                Email = registerRequest.Email
-            };
-
-            var createResult = await _userManager.CreateAsync(user, registerRequest.Password);
+            var createResult = await _userManager.CreateAsync(user, password);
 
             if (!createResult.Succeeded)
             {

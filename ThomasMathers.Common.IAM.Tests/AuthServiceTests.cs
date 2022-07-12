@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Requests;
 using ThomasMathers.Common.IAM.Services;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -16,7 +15,7 @@ namespace ThomasMathers.Common.IAM.Tests
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<SignInManager<User>> _signInManagerMock;
         private readonly Mock<IAccessTokenGenerator> _accessTokenGeneratorMock;
-        private readonly User _user;
+        private readonly User _user = new() { UserName = _username };
         private readonly AuthService _sut;
         private const string _username = "USERNAME_001";
         private const string _password = "PASSWORD_001";
@@ -45,19 +44,14 @@ namespace ThomasMathers.Common.IAM.Tests
 
             _accessTokenGeneratorMock = new Mock<IAccessTokenGenerator>();
 
-            _user = new User { UserName = _username };
-
             _sut = new AuthService(_signInManagerMock.Object, _userManagerMock.Object, _accessTokenGeneratorMock.Object);
         }
 
         [Fact]
         public async Task Login_UserDoesNotExist_ReturnsNotFound()
         {
-            // Arrange
-            var loginRequest = new LoginRequest();
-
             // Act
-            var result = await _sut.Login(loginRequest);
+            var result = await _sut.Login(_username, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -75,11 +69,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(SignInResult.LockedOut);
 
             // Act
-            var result = await _sut.Login(new LoginRequest
-            {
-                UserName = _username,
-                Password = _password,
-            });
+            var result = await _sut.Login(_username, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -97,11 +87,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(SignInResult.TwoFactorRequired);
 
             // Act
-            var result = await _sut.Login(new LoginRequest
-            {
-                UserName = _username,
-                Password = _password,
-            });
+            var result = await _sut.Login(_username, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -119,11 +105,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(SignInResult.NotAllowed);
 
             // Act
-            var result = await _sut.Login(new LoginRequest
-            {
-                UserName = _username,
-                Password = _password,
-            });
+            var result = await _sut.Login(_username, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -141,11 +123,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(SignInResult.Failed);
 
             // Act
-            var result = await _sut.Login(new LoginRequest
-            {
-                UserName = _username,
-                Password = _password,
-            });
+            var result = await _sut.Login(_username, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -165,11 +143,7 @@ namespace ThomasMathers.Common.IAM.Tests
             _accessTokenGeneratorMock.Setup(x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>())).Returns(_accessToken);
 
             // Act
-            var result = await _sut.Login(new LoginRequest
-            {
-                UserName = _username,
-                Password = _password,
-            });
+            var result = await _sut.Login(_username, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -182,12 +156,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task ChangePassword_UserDoesNotExist_ReturnsCorrectResponseType()
         {
             // Act
-            var result = await _sut.ChangePassword(new ChangePasswordRequest
-            {
-                UserName = _username,
-                CurrentPassword = _password,
-                NewPassword = _password,
-            });
+            var result = await _sut.ChangePassword(_username, _password, string.Empty, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -204,12 +173,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(IdentityResult.Failed(_errors));
 
             // Act
-            var result = await _sut.ChangePassword(new ChangePasswordRequest
-            {
-                UserName = _username,
-                CurrentPassword = _password,
-                NewPassword = _password,
-            });
+            var result = await _sut.ChangePassword(_username, _password, string.Empty, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -227,12 +191,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(IdentityResult.Success);
 
             // Act
-            var result = await _sut.ChangePassword(new ChangePasswordRequest
-            {
-                UserName = _username,
-                CurrentPassword = _password,
-                NewPassword = _password,
-            });
+            var result = await _sut.ChangePassword(_username, _password, string.Empty, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -270,12 +229,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task ResetPassword_UserDoesNotExist_ReturnsCorrectResponseType()
         {
             // Act
-            var result = await _sut.ChangePassword(new ChangePasswordRequest
-            {
-                UserName = _username,
-                CurrentPassword = _password,
-                Token = _passwordResetToken
-            });
+            var result = await _sut.ChangePassword(_username, string.Empty, _passwordResetToken, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -292,12 +246,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(IdentityResult.Failed(_errors));
 
             // Act
-            var result = await _sut.ChangePassword(new ChangePasswordRequest
-            {
-                UserName = _username,
-                Token = _passwordResetToken,
-                NewPassword = _password,
-            });
+            var result = await _sut.ChangePassword(_username, string.Empty, _passwordResetToken, _password);
 
             // Assert
             Assert.NotNull(result);
@@ -315,12 +264,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(IdentityResult.Success);
 
             // Act
-            var result = await _sut.ChangePassword(new ChangePasswordRequest
-            {
-                UserName = _username,
-                Token = _passwordResetToken,
-                NewPassword= _password,
-            });
+            var result = await _sut.ChangePassword(_username, string.Empty, _passwordResetToken, _password);
 
             // Assert
             Assert.NotNull(result);
