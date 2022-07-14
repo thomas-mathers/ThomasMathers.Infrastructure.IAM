@@ -11,7 +11,6 @@ namespace ThomasMathers.Common.IAM.Tests.Helpers
         {
             var services = new ServiceCollection();
 
-            services.AddLogging();
             services.AddIAM(new IAMSettings());
 
             var serviceProvider = services.BuildServiceProvider();

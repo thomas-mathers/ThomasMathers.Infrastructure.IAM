@@ -26,6 +26,8 @@ namespace ThomasMathers.Common.IAM.Extensions
 
         public static void AddIAM(this IServiceCollection services, IAMSettings iamSettings)
         {
+            services.AddLogging();
+
             if (string.IsNullOrEmpty(iamSettings.ConnectionString))
             {
                 services.AddDbContext<DatabaseContext>(optionsBuilder =>
@@ -53,9 +55,9 @@ namespace ThomasMathers.Common.IAM.Extensions
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuer = iamSettings.Jwt.Issuer,
-                        ValidAudience = iamSettings.Jwt.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(iamSettings.Jwt.Key)),
+                        ValidIssuer = iamSettings.JwtTokenSettings.Issuer,
+                        ValidAudience = iamSettings.JwtTokenSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(iamSettings.JwtTokenSettings.Key)),
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateIssuerSigningKey = true,
@@ -77,7 +79,8 @@ namespace ThomasMathers.Common.IAM.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccessTokenGenerator, AccessTokenGenerator>();
             services.AddScoped(serviceProvider => iamSettings);
-            services.AddScoped(serviceProvider => iamSettings.Jwt);
+            services.AddScoped(serviceProvider => iamSettings.JwtTokenSettings);
+            services.AddScoped(serviceProvider => iamSettings.PasswordSettings);
         }
     }
 }
