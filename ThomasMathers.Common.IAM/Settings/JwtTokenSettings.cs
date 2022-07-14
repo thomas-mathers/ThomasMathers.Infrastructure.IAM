@@ -2,9 +2,9 @@
 {
     public record JwtTokenSettings
     {
-        public string Key { get; init; }
-        public string Issuer { get; init; }
-        public string Audience { get; init; }
-        public int LifespanInDays { get; init; }
+        public string Key { get; init; } = Guid.NewGuid().ToString();
+        public string Issuer { get; init; } = string.Empty;
+        public string Audience { get; init; } = string.Empty;
+        public int LifespanInDays { get; init; } = 1;
     }
 }

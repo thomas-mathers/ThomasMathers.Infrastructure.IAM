@@ -12,16 +12,7 @@ namespace ThomasMathers.Common.IAM.Tests.Helpers
             var services = new ServiceCollection();
 
             services.AddLogging();
-            services.AddIAM(new IAMSettings
-            {
-                Jwt = new JwtTokenSettings
-                {
-                    Key = "ABfTVaKf/VAZEY#U4wua1h,*tlfGG`",
-                    Issuer = "localhost",
-                    Audience = "localhost",
-                    LifespanInDays = 1
-                }
-            });
+            services.AddIAM(new IAMSettings());
 
             var serviceProvider = services.BuildServiceProvider();
 

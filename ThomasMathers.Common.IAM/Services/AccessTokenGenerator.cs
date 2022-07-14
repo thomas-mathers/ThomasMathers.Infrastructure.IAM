@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using ThomasMathers.Common.IAM.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

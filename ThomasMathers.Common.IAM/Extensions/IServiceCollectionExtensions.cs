@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ThomasMathers.Common.IAM.Mappers;
 
 namespace ThomasMathers.Common.IAM.Extensions
 {
@@ -67,6 +68,7 @@ namespace ThomasMathers.Common.IAM.Extensions
                 .AddIdentity<User, Role>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
+                    options.Password = PasswordSettingsMapper.Map(iamSettings.PasswordSettings);
                 })
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders();
