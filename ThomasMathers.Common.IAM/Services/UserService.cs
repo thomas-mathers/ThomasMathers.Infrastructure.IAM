@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using ThomasMathers.Common.IAM.Data;
+using ThomasMathers.Common.IAM.Notifications;
 using ThomasMathers.Common.IAM.Responses;
 
 namespace ThomasMathers.Common.IAM.Services
@@ -13,10 +15,12 @@ namespace ThomasMathers.Common.IAM.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
+        private readonly IMediator _mediator;
 
-        public UserService(UserManager<User> userManager)
+        public UserService(UserManager<User> userManager, IMediator mediator)
         {
             _userManager = userManager;
+            _mediator = mediator;
         }
 
         public Task<User> GetUserByUserName(string userName)
@@ -32,6 +36,11 @@ namespace ThomasMathers.Common.IAM.Services
             {
                 return new IdentityErrorResponse(createResult.Errors);
             }
+
+            await _mediator.Publish(new UserRegisteredNotification
+            {
+                User = user
+            });
 
             return new RegisterSuccessResponse(user);
         }

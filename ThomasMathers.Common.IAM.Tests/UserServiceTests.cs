@@ -4,12 +4,14 @@ using ThomasMathers.Common.IAM.Data;
 using ThomasMathers.Common.IAM.Services;
 using System.Threading.Tasks;
 using Xunit;
+using MediatR;
 
 namespace ThomasMathers.Common.IAM.Tests
 {
     public class UserServiceTests
     {
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<IMediator> _mediatorMock;
         private readonly UserService _sut;
         private readonly User _user = new() { UserName = "USERNAME001" };
         private const string _password = "PASSWORD001";
@@ -19,7 +21,10 @@ namespace ThomasMathers.Common.IAM.Tests
             _userManagerMock = new Mock<UserManager<User>>(
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null
             );
-            _sut = new UserService(_userManagerMock.Object);
+
+            _mediatorMock = new Mock<IMediator>();
+
+            _sut = new UserService(_userManagerMock.Object, _mediatorMock.Object);
         }
 
         [Fact]

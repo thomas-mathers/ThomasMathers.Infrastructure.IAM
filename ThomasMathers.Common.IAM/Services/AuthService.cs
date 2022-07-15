@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using ThomasMathers.Common.IAM.Data;
+using ThomasMathers.Common.IAM.Notifications;
 using ThomasMathers.Common.IAM.Responses;
 
 namespace ThomasMathers.Common.IAM.Services
@@ -8,7 +10,7 @@ namespace ThomasMathers.Common.IAM.Services
     {
         Task<LoginResponse> Login(string userName, string password);
         Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token, string newPassword);
-        Task<string> GeneratePasswordResetToken(User user);
+        Task<string> ResetPassword(User user);
     }
 
     public class AuthService : IAuthService
@@ -16,12 +18,14 @@ namespace ThomasMathers.Common.IAM.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IAccessTokenGenerator _accessTokenGenerator;
+        private readonly IMediator _mediator;
 
-        public AuthService(SignInManager<User> signInManager, UserManager<User> userManager, IAccessTokenGenerator accessTokenGenerator)
+        public AuthService(SignInManager<User> signInManager, UserManager<User> userManager, IAccessTokenGenerator accessTokenGenerator, IMediator mediator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _accessTokenGenerator = accessTokenGenerator;
+            _mediator = mediator;
         }
 
         public async Task<LoginResponse> Login(string userName, string password)
@@ -94,9 +98,17 @@ namespace ThomasMathers.Common.IAM.Services
             return new ChangePasswordSuccessResponse();
         }
 
-        public async Task<string> GeneratePasswordResetToken(User user)
+        public async Task<string> ResetPassword(User user)
         {
-            return await _userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            await _mediator.Publish(new ResetPasswordNotification
+            {
+                User = user,
+                Token = token,
+            });
+
+            return token;
         }
     }
 }

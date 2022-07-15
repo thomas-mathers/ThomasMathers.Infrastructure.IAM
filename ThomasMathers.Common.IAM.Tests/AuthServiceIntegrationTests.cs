@@ -166,7 +166,7 @@ namespace ThomasMathers.Common.IAM.Tests
             await _userManager.CreateAsync(_user, _password1);
 
             // Act
-            var token = await _sut.GeneratePasswordResetToken(_user);
+            var token = await _sut.ResetPassword(_user);
 
             // Assert
             Assert.NotNull(token);

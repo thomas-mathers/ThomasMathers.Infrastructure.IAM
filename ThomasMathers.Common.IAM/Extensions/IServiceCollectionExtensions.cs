@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ThomasMathers.Common.IAM.Mappers;
+using MediatR;
+using System.Reflection;
 
 namespace ThomasMathers.Common.IAM.Extensions
 {
@@ -26,6 +28,7 @@ namespace ThomasMathers.Common.IAM.Extensions
 
         public static void AddIAM(this IServiceCollection services, IAMSettings iamSettings)
         {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddLogging();
 
             if (string.IsNullOrEmpty(iamSettings.ConnectionString))

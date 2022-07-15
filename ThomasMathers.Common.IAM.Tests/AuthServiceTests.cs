@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
+using MediatR;
 
 namespace ThomasMathers.Common.IAM.Tests
 {
@@ -15,6 +16,7 @@ namespace ThomasMathers.Common.IAM.Tests
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<SignInManager<User>> _signInManagerMock;
         private readonly Mock<IAccessTokenGenerator> _accessTokenGeneratorMock;
+        private readonly Mock<IMediator> _mediatorMock;
         private readonly User _user = new() { UserName = _username };
         private readonly AuthService _sut;
         private const string _username = "USERNAME_001";
@@ -44,7 +46,9 @@ namespace ThomasMathers.Common.IAM.Tests
 
             _accessTokenGeneratorMock = new Mock<IAccessTokenGenerator>();
 
-            _sut = new AuthService(_signInManagerMock.Object, _userManagerMock.Object, _accessTokenGeneratorMock.Object);
+            _mediatorMock = new Mock<IMediator>();
+
+            _sut = new AuthService(_signInManagerMock.Object, _userManagerMock.Object, _accessTokenGeneratorMock.Object, _mediatorMock.Object);
         }
 
         [Fact]
@@ -202,7 +206,7 @@ namespace ThomasMathers.Common.IAM.Tests
         public async Task GeneratePasswordResetToken_UserDoesNotExist_ReturnsCorrectResponseType()
         {
             // Act
-            var token = await _sut.GeneratePasswordResetToken(_user);
+            var token = await _sut.ResetPassword(_user);
 
             // Assert
             Assert.Null(token);
@@ -218,7 +222,7 @@ namespace ThomasMathers.Common.IAM.Tests
                 .ReturnsAsync(_passwordResetToken);
 
             // Act
-            var token = await _sut.GeneratePasswordResetToken(_user);
+            var token = await _sut.ResetPassword(_user);
 
             // Assert
             Assert.NotNull(token);
