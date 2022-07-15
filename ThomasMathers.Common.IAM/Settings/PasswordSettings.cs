@@ -1,6 +1,6 @@
 ﻿namespace ThomasMathers.Common.IAM.Settings
 {
-    public class PasswordSettings
+    public record PasswordSettings
     {
         public bool RequireDigit { get; init; } = true;
         public int RequiredLength { get; init; } = 6;

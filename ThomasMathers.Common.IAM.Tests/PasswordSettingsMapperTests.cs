@@ -23,7 +23,7 @@ namespace ThomasMathers.Common.IAM.Tests
         [InlineData(true, 7, 2, true, false, true)]
         [InlineData(true, 5, 3, true, true, false)]
         [InlineData(true, 6, 1, true, true, true)]
-        public void PasswordSettingsMapperTests_MapsCorrectly(bool requireDigit, int requiredLength, int requiredUniqueChars, bool requireLowercase, bool requireNonAlphanumeric, bool requireUppercase)
+        public void Map_MapsCorrectly(bool requireDigit, int requiredLength, int requiredUniqueChars, bool requireLowercase, bool requireNonAlphanumeric, bool requireUppercase)
         {
             // Arrange
             var source = new PasswordSettings

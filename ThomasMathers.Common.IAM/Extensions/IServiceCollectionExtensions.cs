@@ -69,7 +69,7 @@ namespace ThomasMathers.Common.IAM.Extensions
             services
                 .AddIdentity<User, Role>(options =>
                 {
-                    options.User.RequireUniqueEmail = true;
+                    options.User = UserSettingsMapper.Map(iamSettings.UserSettings);
                     options.Password = PasswordSettingsMapper.Map(iamSettings.PasswordSettings);
                 })
                 .AddEntityFrameworkStores<DatabaseContext>()
@@ -79,8 +79,9 @@ namespace ThomasMathers.Common.IAM.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccessTokenGenerator, AccessTokenGenerator>();
             services.AddScoped(serviceProvider => iamSettings);
-            services.AddScoped(serviceProvider => iamSettings.JwtTokenSettings);
+            services.AddScoped(serviceProvider => iamSettings.UserSettings);
             services.AddScoped(serviceProvider => iamSettings.PasswordSettings);
+            services.AddScoped(serviceProvider => iamSettings.JwtTokenSettings);
         }
     }
 }

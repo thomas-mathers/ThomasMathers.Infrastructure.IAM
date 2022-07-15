@@ -132,12 +132,40 @@ namespace ThomasMathers.Common.IAM.Tests
             // Assert
             Assert.NotNull(actual);
             Assert.NotNull(actual.PasswordSettings);
-            Assert.Equal(actual.PasswordSettings.RequireDigit, requireDigit);
-            Assert.Equal(actual.PasswordSettings.RequiredLength, requiredLength);
-            Assert.Equal(actual.PasswordSettings.RequiredUniqueChars, requiredUniqueChars);
-            Assert.Equal(actual.PasswordSettings.RequireLowercase, requireLowercase);
-            Assert.Equal(actual.PasswordSettings.RequireNonAlphanumeric, requireNonAlphanumeric);
-            Assert.Equal(actual.PasswordSettings.RequireUppercase, requireUppercase);
+            Assert.Equal(requireDigit, actual.PasswordSettings.RequireDigit);
+            Assert.Equal(requiredLength, actual.PasswordSettings.RequiredLength);
+            Assert.Equal(requiredUniqueChars, actual.PasswordSettings.RequiredUniqueChars);
+            Assert.Equal(requireLowercase, actual.PasswordSettings.RequireLowercase);
+            Assert.Equal(requireNonAlphanumeric, actual.PasswordSettings.RequireNonAlphanumeric);
+            Assert.Equal(requireUppercase, actual.PasswordSettings.RequireUppercase);
+        }
+
+        [Theory]
+        [InlineData(true, "abcdefghijklmnopqrstuvwxyz")]
+        [InlineData(false, "abcdefghijklmnopqrstuvwxyz")]
+        public void FromConfigurationSection_UserSettingsOverride_ReturnsOverride(bool requireUniqueEmail, string allowedUserNameCharacters)
+        {
+            var json = JsonSerializer.Serialize(new
+            {
+                IAMSettings = new IAMSettings
+                {
+                    UserSettings = new UserSettings
+                    {   
+                        RequireUniqueEmail = requireUniqueEmail,
+                        AllowedUserNameCharacters = allowedUserNameCharacters
+                    }
+                }
+            });
+            var configuration = IConfigurationBuilder.Build(json);
+
+            // Act
+            var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
+
+            // Assert
+            Assert.NotNull(actual);
+            Assert.NotNull(actual.UserSettings);
+            Assert.Equal(requireUniqueEmail, actual.UserSettings.RequireUniqueEmail);
+            Assert.Equal(allowedUserNameCharacters, actual.UserSettings.AllowedUserNameCharacters);
         }
     }
 }

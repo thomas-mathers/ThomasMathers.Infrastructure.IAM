@@ -2,11 +2,12 @@
 
 namespace ThomasMathers.Common.IAM.Settings
 {
-    public class IAMSettings
+    public record IAMSettings
     {
-        public string ConnectionString { get; set; } = string.Empty;
-        public PasswordSettings PasswordSettings { get; set; } = new PasswordSettings();
-        public JwtTokenSettings JwtTokenSettings { get; set; } = new JwtTokenSettings();
+        public string ConnectionString { get; init; } = string.Empty;
+        public UserSettings UserSettings { get; init; } = new UserSettings();
+        public PasswordSettings PasswordSettings { get; init; } = new PasswordSettings();
+        public JwtTokenSettings JwtTokenSettings { get; init; } = new JwtTokenSettings();
 
         public static IAMSettings FromConfigurationSection(IConfigurationSection section)
         {

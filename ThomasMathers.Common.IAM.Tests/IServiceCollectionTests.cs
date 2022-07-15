@@ -30,8 +30,9 @@ namespace ThomasMathers.Common.IAM.Tests
             Assert.NotNull(serviceProvider.GetRequiredService<IAuthService>());
             Assert.NotNull(serviceProvider.GetRequiredService<IAccessTokenGenerator>());
             Assert.NotNull(serviceProvider.GetRequiredService<IAMSettings>());
-            Assert.NotNull(serviceProvider.GetRequiredService<JwtTokenSettings>());
+            Assert.NotNull(serviceProvider.GetRequiredService<UserSettings>());
             Assert.NotNull(serviceProvider.GetRequiredService<PasswordSettings>());
+            Assert.NotNull(serviceProvider.GetRequiredService<JwtTokenSettings>());            
         }
     }
 }
