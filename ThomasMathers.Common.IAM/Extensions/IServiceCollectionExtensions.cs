@@ -28,7 +28,7 @@ namespace ThomasMathers.Common.IAM.Extensions
 
         public static void AddIAM(this IServiceCollection services, IAMSettings iamSettings)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(Assembly.GetCallingAssembly(), Assembly.GetExecutingAssembly());
             services.AddLogging();
 
             if (string.IsNullOrEmpty(iamSettings.ConnectionString))
