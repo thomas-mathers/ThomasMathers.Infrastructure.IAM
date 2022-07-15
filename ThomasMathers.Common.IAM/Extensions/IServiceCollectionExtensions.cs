@@ -28,7 +28,7 @@ namespace ThomasMathers.Common.IAM.Extensions
 
         public static void AddIAM(this IServiceCollection services, IAMSettings iamSettings)
         {
-            services.AddMediatR(Assembly.GetCallingAssembly(), Assembly.GetExecutingAssembly());
+            services.AddMediatR(GetMediatorAssemblies());
             services.AddLogging();
 
             if (string.IsNullOrEmpty(iamSettings.ConnectionString))
@@ -85,6 +85,20 @@ namespace ThomasMathers.Common.IAM.Extensions
             services.AddScoped(serviceProvider => iamSettings.UserSettings);
             services.AddScoped(serviceProvider => iamSettings.PasswordSettings);
             services.AddScoped(serviceProvider => iamSettings.JwtTokenSettings);
+        }
+
+        private static Assembly[] GetMediatorAssemblies()
+        {
+            var assemblies = new List<Assembly>() { Assembly.GetCallingAssembly(), Assembly.GetExecutingAssembly() };
+
+            var entryAssembly = Assembly.GetEntryAssembly();
+
+            if (entryAssembly != null)
+            {
+                assemblies.Add(entryAssembly);
+            }
+
+            return assemblies.ToArray();
         }
     }
 }
