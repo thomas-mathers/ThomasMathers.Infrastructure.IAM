@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace ThomasMathers.Common.IAM.Settings
+namespace ThomasMathers.Infrastructure.IAM.Settings
 {
     public record IAMSettings
     {

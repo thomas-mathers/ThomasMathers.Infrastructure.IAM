@@ -1,8 +1,8 @@
-﻿using ThomasMathers.Common.IAM.Settings;
-using ThomasMathers.Common.IAM.Tests.MockObjects;
+﻿using ThomasMathers.Infrastructure.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Tests.MockObjects;
 using Xunit;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class PasswordValidatorTests
     {

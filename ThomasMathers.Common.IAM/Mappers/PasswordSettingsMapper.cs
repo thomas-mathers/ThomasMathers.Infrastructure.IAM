@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Settings;
 
-namespace ThomasMathers.Common.IAM.Mappers
+namespace ThomasMathers.Infrastructure.IAM.Mappers
 {
     public static class PasswordSettingsMapper
     {

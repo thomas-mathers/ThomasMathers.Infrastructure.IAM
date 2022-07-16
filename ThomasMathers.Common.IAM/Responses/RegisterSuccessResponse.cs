@@ -1,6 +1,6 @@
-﻿using ThomasMathers.Common.IAM.Data;
+﻿using ThomasMathers.Infrastructure.IAM.Data;
 
-namespace ThomasMathers.Common.IAM.Responses
+namespace ThomasMathers.Infrastructure.IAM.Responses
 {
     public record RegisterSuccessResponse(User user);
 }

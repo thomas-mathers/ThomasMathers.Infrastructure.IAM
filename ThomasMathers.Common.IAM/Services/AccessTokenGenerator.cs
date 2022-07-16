@@ -1,10 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ThomasMathers.Common.IAM.Services
+namespace ThomasMathers.Infrastructure.IAM.Services
 {
     public interface IAccessTokenGenerator
     {

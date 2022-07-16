@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ThomasMathers.Common.IAM.Data
+namespace ThomasMathers.Infrastructure.IAM.Data
 {
     public class Role : IdentityRole<Guid>
     {

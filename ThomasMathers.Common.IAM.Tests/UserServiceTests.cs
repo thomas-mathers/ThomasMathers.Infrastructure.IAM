@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Services;
+using ThomasMathers.Infrastructure.IAM.Data;
+using ThomasMathers.Infrastructure.IAM.Services;
 using System.Threading.Tasks;
 using Xunit;
 using MediatR;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class UserServiceTests
     {

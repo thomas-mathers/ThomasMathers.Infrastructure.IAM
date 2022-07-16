@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace ThomasMathers.Common.IAM.Tests.Helpers
+namespace ThomasMathers.Infrastructure.IAM.Tests.Helpers
 {
     public static class IConfigurationBuilder
     {

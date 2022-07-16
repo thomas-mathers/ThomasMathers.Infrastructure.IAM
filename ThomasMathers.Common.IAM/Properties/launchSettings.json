@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "ThomasMathers.Common.IAM": {
+    "ThomasMathers.Infrastructure.IAM": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

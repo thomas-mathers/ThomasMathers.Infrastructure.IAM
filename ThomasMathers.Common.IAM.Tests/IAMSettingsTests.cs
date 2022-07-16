@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
-using ThomasMathers.Common.IAM.Settings;
-using ThomasMathers.Common.IAM.Tests.Helpers;
+using ThomasMathers.Infrastructure.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Tests.Helpers;
 using Xunit;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class IAMSettingsTests
     {

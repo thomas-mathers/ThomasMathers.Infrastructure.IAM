@@ -1,8 +1,8 @@
-﻿using ThomasMathers.Common.IAM.Mappers;
-using ThomasMathers.Common.IAM.Settings;
+﻿using ThomasMathers.Infrastructure.IAM.Mappers;
+using ThomasMathers.Infrastructure.IAM.Settings;
 using Xunit;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class UserSettingsMapperTests
     {

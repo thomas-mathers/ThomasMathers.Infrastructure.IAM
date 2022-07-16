@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ThomasMathers.Common.IAM.Tests.Comparers
+namespace ThomasMathers.Infrastructure.IAM.Tests.Comparers
 {
     internal class IdentityErrorComparer : IEqualityComparer<IdentityError>
     {

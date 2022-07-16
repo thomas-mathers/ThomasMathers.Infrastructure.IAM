@@ -1,4 +1,4 @@
-﻿namespace ThomasMathers.Common.IAM.Responses
+﻿namespace ThomasMathers.Infrastructure.IAM.Responses
 {
     public record LoginRequiresTwoFactorResponse();
 }

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Settings;
 
-namespace ThomasMathers.Common.IAM.Extensions
+namespace ThomasMathers.Infrastructure.IAM.Extensions
 {
     public static class IRuleBuilderExtensions
     {

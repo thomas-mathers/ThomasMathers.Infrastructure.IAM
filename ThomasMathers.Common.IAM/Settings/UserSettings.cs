@@ -1,4 +1,4 @@
-﻿namespace ThomasMathers.Common.IAM.Settings
+﻿namespace ThomasMathers.Infrastructure.IAM.Settings
 {
     public record UserSettings
     {

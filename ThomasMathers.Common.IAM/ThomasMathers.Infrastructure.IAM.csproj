@@ -5,14 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/thomas-mathers/ThomasMathers.Common.IAM/tree/master/ThomasMathers.Common.IAM</RepositoryUrl>
+    <RepositoryUrl>https://github.com/thomas-mathers/ThomasMathers.Infrastructure.IAM</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Authentication;Authorization;IAM</PackageTags>
     <Authors>tmathers</Authors>
-    <PackageProjectUrl>https://github.com/thomas-mathers/ThomasMathers.Common.IAM/tree/master/ThomasMathers.Common.IAM</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/thomas-mathers/ThomasMathers.Infrastructure.IAM</PackageProjectUrl>
     <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
     <FileVersion>$(VersionPrefix)</FileVersion>
-    <Version>3.4.1</Version>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

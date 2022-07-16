@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Services;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Data;
+using ThomasMathers.Infrastructure.IAM.Services;
+using ThomasMathers.Infrastructure.IAM.Settings;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using ThomasMathers.Common.IAM.Mappers;
+using ThomasMathers.Infrastructure.IAM.Mappers;
 using MediatR;
 using System.Reflection;
 
-namespace ThomasMathers.Common.IAM.Extensions
+namespace ThomasMathers.Infrastructure.IAM.Extensions
 {
     public static class IServiceCollectionExtensions
     {
@@ -89,16 +89,7 @@ namespace ThomasMathers.Common.IAM.Extensions
 
         private static Assembly[] GetMediatorAssemblies()
         {
-            var assemblies = new List<Assembly>() { Assembly.GetCallingAssembly(), Assembly.GetExecutingAssembly() };
-
-            var entryAssembly = Assembly.GetEntryAssembly();
-
-            if (entryAssembly != null)
-            {
-                assemblies.Add(entryAssembly);
-            }
-
-            return assemblies.ToArray();
+            return AppDomain.CurrentDomain.GetAssemblies();
         }
     }
 }

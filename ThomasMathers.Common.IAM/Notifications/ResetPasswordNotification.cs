@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using ThomasMathers.Common.IAM.Data;
+using ThomasMathers.Infrastructure.IAM.Data;
 
-namespace ThomasMathers.Common.IAM.Notifications
+namespace ThomasMathers.Infrastructure.IAM.Notifications
 {
     public class UserRegisteredNotification : INotification
     {

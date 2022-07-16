@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ThomasMathers.Common.IAM.Extensions;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Extensions;
+using ThomasMathers.Infrastructure.IAM.Settings;
 using System;
 
-namespace ThomasMathers.Common.IAM.Tests.Helpers
+namespace ThomasMathers.Infrastructure.IAM.Tests.Helpers
 {
     internal static class ServiceProviderBuilder
     {

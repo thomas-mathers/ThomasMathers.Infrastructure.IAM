@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
-using ThomasMathers.Common.IAM.Services;
-using ThomasMathers.Common.IAM.Settings;
-using ThomasMathers.Common.IAM.Tests.Comparers;
+using ThomasMathers.Infrastructure.IAM.Services;
+using ThomasMathers.Infrastructure.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Tests.Comparers;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using Xunit;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class AccessTokenGeneratorTests
     {

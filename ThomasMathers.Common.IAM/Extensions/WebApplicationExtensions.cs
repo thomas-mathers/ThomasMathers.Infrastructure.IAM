@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace ThomasMathers.Common.IAM.Extensions
+namespace ThomasMathers.Infrastructure.IAM.Extensions
 {
     public static class WebApplicationExtensions
     {

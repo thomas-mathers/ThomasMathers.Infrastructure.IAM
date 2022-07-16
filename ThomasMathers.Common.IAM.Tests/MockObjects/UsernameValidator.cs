@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using ThomasMathers.Common.IAM.Extensions;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Extensions;
+using ThomasMathers.Infrastructure.IAM.Settings;
 
-namespace ThomasMathers.Common.IAM.Tests.MockObjects
+namespace ThomasMathers.Infrastructure.IAM.Tests.MockObjects
 {
     internal class UsernameValidator : AbstractValidator<string>
     {

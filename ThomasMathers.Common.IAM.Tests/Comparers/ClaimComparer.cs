@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
-namespace ThomasMathers.Common.IAM.Tests.Comparers
+namespace ThomasMathers.Infrastructure.IAM.Tests.Comparers
 {
     internal class ClaimComparer : IEqualityComparer<Claim>
     {

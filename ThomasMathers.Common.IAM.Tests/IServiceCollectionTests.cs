@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ThomasMathers.Common.IAM.Extensions;
-using ThomasMathers.Common.IAM.Services;
-using ThomasMathers.Common.IAM.Settings;
+using ThomasMathers.Infrastructure.IAM.Extensions;
+using ThomasMathers.Infrastructure.IAM.Services;
+using ThomasMathers.Infrastructure.IAM.Settings;
 using Xunit;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class IServiceCollectionTests
     {

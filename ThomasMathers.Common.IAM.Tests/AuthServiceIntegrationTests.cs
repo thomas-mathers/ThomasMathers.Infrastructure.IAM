@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Services;
-using ThomasMathers.Common.IAM.Tests.Comparers;
-using ThomasMathers.Common.IAM.Tests.Helpers;
+using ThomasMathers.Infrastructure.IAM.Data;
+using ThomasMathers.Infrastructure.IAM.Services;
+using ThomasMathers.Infrastructure.IAM.Tests.Comparers;
+using ThomasMathers.Infrastructure.IAM.Tests.Helpers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ThomasMathers.Common.IAM.Tests
+namespace ThomasMathers.Infrastructure.IAM.Tests
 {
     public class AuthServiceIntegrationTests
     {

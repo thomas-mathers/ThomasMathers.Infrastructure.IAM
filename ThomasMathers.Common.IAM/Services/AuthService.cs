@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ThomasMathers.Common.IAM.Data;
-using ThomasMathers.Common.IAM.Notifications;
-using ThomasMathers.Common.IAM.Responses;
+using ThomasMathers.Infrastructure.IAM.Data;
+using ThomasMathers.Infrastructure.IAM.Notifications;
+using ThomasMathers.Infrastructure.IAM.Responses;
 
-namespace ThomasMathers.Common.IAM.Services
+namespace ThomasMathers.Infrastructure.IAM.Services
 {
     public interface IAuthService
     {
