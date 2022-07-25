@@ -1,4 +1,3 @@
-﻿namespace ThomasMathers.Infrastructure.IAM.Responses
-{
-    public record LoginIsNotAllowedResponse();
-}
+﻿namespace ThomasMathers.Infrastructure.IAM.Responses;
+
+public record LoginIsNotAllowedResponse;

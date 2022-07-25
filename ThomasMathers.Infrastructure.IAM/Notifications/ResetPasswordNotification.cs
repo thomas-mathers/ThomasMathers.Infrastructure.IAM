@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using ThomasMathers.Infrastructure.IAM.Data;
 
-namespace ThomasMathers.Infrastructure.IAM.Notifications
+namespace ThomasMathers.Infrastructure.IAM.Notifications;
+
+public record ResetPasswordNotification : INotification
 {
-    public class UserRegisteredNotification : INotification
-    {
-        public User User { get; init; }
-    }
+    public string Token { get; init; } = string.Empty;
+    public User User { get; init; } = new();
 }

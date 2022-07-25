@@ -4,45 +4,44 @@ using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using ThomasMathers.Infrastructure.IAM.Responses;
 
-namespace ThomasMathers.Infrastructure.IAM.Services
+namespace ThomasMathers.Infrastructure.IAM.Services;
+
+public interface IUserService
 {
-    public interface IUserService
+    Task<User> GetUserByUserName(string userName);
+    Task<RegisterResponse> Register(User user, string password);
+}
+
+public class UserService : IUserService
+{
+    private readonly IMediator _mediator;
+    private readonly UserManager<User> _userManager;
+
+    public UserService(UserManager<User> userManager, IMediator mediator)
     {
-        Task<User> GetUserByUserName(string userName);
-        Task<RegisterResponse> Register(User user, string password);
+        _userManager = userManager;
+        _mediator = mediator;
     }
 
-    public class UserService : IUserService
+    public Task<User> GetUserByUserName(string userName)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IMediator _mediator;
+        return _userManager.FindByNameAsync(userName);
+    }
 
-        public UserService(UserManager<User> userManager, IMediator mediator)
+    public async Task<RegisterResponse> Register(User user, string password)
+    {
+        var createResult = await _userManager.CreateAsync(user, password);
+
+        if (!createResult.Succeeded) return new IdentityErrorResponse(createResult.Errors);
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        await _mediator.Publish(new UserRegisteredNotification
         {
-            _userManager = userManager;
-            _mediator = mediator;
-        }
+            User = user,
+            Token = token
+        });
 
-        public Task<User> GetUserByUserName(string userName)
-        {
-            return _userManager.FindByNameAsync(userName);
-        }
-
-        public async Task<RegisterResponse> Register(User user, string password)
-        {
-            var createResult = await _userManager.CreateAsync(user, password);
-
-            if (!createResult.Succeeded)
-            {
-                return new IdentityErrorResponse(createResult.Errors);
-            }
-
-            await _mediator.Publish(new UserRegisteredNotification
-            {
-                User = user
-            });
-
-            return new RegisterSuccessResponse(user);
-        }
+        return new RegisterSuccessResponse(user);
     }
 }

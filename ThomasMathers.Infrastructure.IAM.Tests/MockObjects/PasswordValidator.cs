@@ -2,13 +2,12 @@
 using ThomasMathers.Infrastructure.IAM.Extensions;
 using ThomasMathers.Infrastructure.IAM.Settings;
 
-namespace ThomasMathers.Infrastructure.IAM.Tests.MockObjects
+namespace ThomasMathers.Infrastructure.IAM.Tests.MockObjects;
+
+internal class PasswordValidator : AbstractValidator<string>
 {
-    internal class PasswordValidator : AbstractValidator<string>
+    public PasswordValidator(PasswordSettings settings)
     {
-        public PasswordValidator(PasswordSettings settings)
-        {
-            RuleFor(x => x).Password(settings);
-        }
+        RuleFor(x => x).Password(settings);
     }
 }

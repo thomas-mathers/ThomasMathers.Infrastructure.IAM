@@ -1,4 +1,3 @@
-﻿namespace ThomasMathers.Infrastructure.IAM.Responses
-{
-    public record UserLockedOutResponse();
-}
+﻿namespace ThomasMathers.Infrastructure.IAM.Responses;
+
+public record UserLockedOutResponse;

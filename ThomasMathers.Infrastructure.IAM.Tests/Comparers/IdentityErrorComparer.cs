@@ -1,29 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
-namespace ThomasMathers.Infrastructure.IAM.Tests.Comparers
+namespace ThomasMathers.Infrastructure.IAM.Tests.Comparers;
+
+internal class IdentityErrorComparer : IEqualityComparer<IdentityError>
 {
-    internal class IdentityErrorComparer : IEqualityComparer<IdentityError>
+    public bool Equals(IdentityError? x, IdentityError? y)
     {
-        public bool Equals(IdentityError? x, IdentityError? y)
-        {
-            if (x == null && y == null)
-            {
-                return true;
-            }
+        if (x == null && y == null) return true;
 
-            if (x == null || y == null)
-            {
-                return false;
-            }
+        if (x == null || y == null) return false;
 
-            return x.Code == y.Code;
-        }
+        return x.Code == y.Code;
+    }
 
-        public int GetHashCode([DisallowNull] IdentityError obj)
-        {
-            return obj.GetHashCode();
-        }
+    public int GetHashCode(IdentityError obj)
+    {
+        return obj.GetHashCode();
     }
 }

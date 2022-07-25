@@ -1,21 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using ThomasMathers.Infrastructure.IAM.Extensions;
 using ThomasMathers.Infrastructure.IAM.Settings;
-using System;
 
-namespace ThomasMathers.Infrastructure.IAM.Tests.Helpers
+namespace ThomasMathers.Infrastructure.IAM.Tests.Helpers;
+
+internal static class ServiceProviderBuilder
 {
-    internal static class ServiceProviderBuilder
+    public static IServiceProvider Build()
     {
-        public static IServiceProvider Build()
-        {
-            var services = new ServiceCollection();
+        var services = new ServiceCollection();
 
-            services.AddIAM(new IAMSettings());
+        services.AddIAM(new IAMSettings());
 
-            var serviceProvider = services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
 
-            return serviceProvider;
-        }
+        return serviceProvider;
     }
 }

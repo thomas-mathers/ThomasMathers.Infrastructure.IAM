@@ -1,4 +1,3 @@
-﻿namespace ThomasMathers.Infrastructure.IAM.Responses
-{
-    public record LoginRequiresTwoFactorResponse();
-}
+﻿namespace ThomasMathers.Infrastructure.IAM.Responses;
+
+public record LoginRequiresTwoFactorResponse;

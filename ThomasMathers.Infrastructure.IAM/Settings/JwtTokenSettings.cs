@@ -1,10 +1,9 @@
-﻿namespace ThomasMathers.Infrastructure.IAM.Settings
+﻿namespace ThomasMathers.Infrastructure.IAM.Settings;
+
+public record JwtTokenSettings
 {
-    public record JwtTokenSettings
-    {
-        public string Key { get; init; } = Guid.NewGuid().ToString();
-        public string Issuer { get; init; } = string.Empty;
-        public string Audience { get; init; } = string.Empty;
-        public int LifespanInDays { get; init; } = 1;
-    }
+    public string Audience { get; init; } = string.Empty;
+    public string Issuer { get; init; } = string.Empty;
+    public string Key { get; init; } = Guid.NewGuid().ToString();
+    public int LifespanInDays { get; init; } = 1;
 }

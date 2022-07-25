@@ -4,111 +4,112 @@ using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using ThomasMathers.Infrastructure.IAM.Responses;
 
-namespace ThomasMathers.Infrastructure.IAM.Services
+namespace ThomasMathers.Infrastructure.IAM.Services;
+
+public interface IAuthService
 {
-    public interface IAuthService
+    Task<ConfirmEmailResponse> ConfirmEmail(string userName, string token);
+    Task<LoginResponse> Login(string userName, string password);
+    Task<ResetPasswordResponse> ResetPassword(string userName);
+
+    Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token,
+        string newPassword);
+}
+
+public class AuthService : IAuthService
+{
+    private readonly IAccessTokenGenerator _accessTokenGenerator;
+    private readonly IMediator _mediator;
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
+
+    public AuthService(SignInManager<User> signInManager, UserManager<User> userManager,
+        IAccessTokenGenerator accessTokenGenerator, IMediator mediator)
     {
-        Task<LoginResponse> Login(string userName, string password);
-        Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token, string newPassword);
-        Task<string> ResetPassword(User user);
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _accessTokenGenerator = accessTokenGenerator;
+        _mediator = mediator;
     }
 
-    public class AuthService : IAuthService
+    public async Task<LoginResponse> Login(string userName, string password)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly IAccessTokenGenerator _accessTokenGenerator;
-        private readonly IMediator _mediator;
+        var user = await _userManager.FindByNameAsync(userName);
 
-        public AuthService(SignInManager<User> signInManager, UserManager<User> userManager, IAccessTokenGenerator accessTokenGenerator, IMediator mediator)
+        if (user == null) return new NotFoundResponse();
+
+        var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, true);
+
+        if (!signInResult.Succeeded)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _accessTokenGenerator = accessTokenGenerator;
-            _mediator = mediator;
+            if (signInResult.IsLockedOut) return new UserLockedOutResponse();
+
+            if (signInResult.RequiresTwoFactor) return new LoginRequiresTwoFactorResponse();
+
+            if (signInResult.IsNotAllowed) return new LoginIsNotAllowedResponse();
+
+            return new LoginFailureResponse();
         }
 
-        public async Task<LoginResponse> Login(string userName, string password)
+        var claims = await _userManager.GetClaimsAsync(user);
+
+        return new LoginSuccessResponse(user.Id, user.UserName, user.Email,
+            _accessTokenGenerator.GenerateAccessToken(claims));
+    }
+
+    public async Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token,
+        string newPassword)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        if (user == null) return new NotFoundResponse();
+
+        if (!string.IsNullOrEmpty(currentPassword))
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var changePasswordResult = await _userManager.ChangePasswordAsync(
+                user,
+                currentPassword,
+                newPassword);
 
-            if (user == null)
-            {
-                return new NotFoundResponse();
-            }
-
-            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, true);
-
-            if (!signInResult.Succeeded)
-            {
-                if (signInResult.IsLockedOut)
-                {
-                    return new UserLockedOutResponse();
-                }
-
-                if (signInResult.RequiresTwoFactor)
-                {
-                    return new LoginRequiresTwoFactorResponse();
-                }
-
-                if (signInResult.IsNotAllowed)
-                {
-                    return new LoginIsNotAllowedResponse();
-                }
-
-                return new LoginFailureResponse();
-            }
-            
-            var claims = await _userManager.GetClaimsAsync(user);
-
-            return new LoginSuccessResponse(user.Id, user.UserName, user.Email, _accessTokenGenerator.GenerateAccessToken(claims));
-        }
-
-        public async Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token, string newPassword)
-        {
-            var user = await _userManager.FindByNameAsync(userName);
-
-            if (user == null)
-            {
-                return new NotFoundResponse();
-            }
-
-            if (!string.IsNullOrEmpty(currentPassword))
-            {
-                var changePasswordResult = await _userManager.ChangePasswordAsync(
-                    user,
-                    currentPassword,
-                    newPassword);
-
-                if (!changePasswordResult.Succeeded)
-                {
-                    return new IdentityErrorResponse(changePasswordResult.Errors);
-                }
-
-                return new ChangePasswordSuccessResponse();
-            }
-
-            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
-
-            if (!resetPasswordResult.Succeeded)
-            {
-                return new IdentityErrorResponse(resetPasswordResult.Errors);
-            }
+            if (!changePasswordResult.Succeeded) return new IdentityErrorResponse(changePasswordResult.Errors);
 
             return new ChangePasswordSuccessResponse();
         }
 
-        public async Task<string> ResetPassword(User user)
+        var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+        if (!resetPasswordResult.Succeeded) return new IdentityErrorResponse(resetPasswordResult.Errors);
+
+        return new ChangePasswordSuccessResponse();
+    }
+
+    public async Task<ResetPasswordResponse> ResetPassword(string userName)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        if (user == null) return new NotFoundResponse();
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        await _mediator.Publish(new ResetPasswordNotification
         {
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            User = user,
+            Token = token
+        });
 
-            await _mediator.Publish(new ResetPasswordNotification
-            {
-                User = user,
-                Token = token,
-            });
+        return new ResetPasswordSuccessResponse(token);
+    }
 
-            return token;
-        }
+    public async Task<ConfirmEmailResponse> ConfirmEmail(string userName, string token)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        if (user == null) return new NotFoundResponse();
+
+        var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
+
+        if (!confirmEmailResult.Succeeded) return new IdentityErrorResponse(confirmEmailResult.Errors);
+
+        return new ConfirmEmailSuccessResponse();
     }
 }

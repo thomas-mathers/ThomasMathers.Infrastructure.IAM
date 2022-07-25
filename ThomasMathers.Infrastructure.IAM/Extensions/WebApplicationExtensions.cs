@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace ThomasMathers.Infrastructure.IAM.Extensions
+namespace ThomasMathers.Infrastructure.IAM.Extensions;
+
+public static class WebApplicationExtensions
 {
-    public static class WebApplicationExtensions
+    public static void UseIAM(this WebApplication webApplication)
     {
-        public static void UseIAM(this WebApplication webApplication)
-        {
-            webApplication.UseAuthentication();
-            webApplication.UseAuthorization();
-        }
+        webApplication.UseAuthentication();
+        webApplication.UseAuthorization();
     }
 }

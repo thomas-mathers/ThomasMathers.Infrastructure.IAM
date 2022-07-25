@@ -1,9 +1,8 @@
 ﻿using OneOf;
 
-namespace ThomasMathers.Infrastructure.IAM.Responses
+namespace ThomasMathers.Infrastructure.IAM.Responses;
+
+[GenerateOneOf]
+public partial class RegisterResponse : OneOfBase<IdentityErrorResponse, RegisterSuccessResponse>
 {
-    [GenerateOneOf]
-    public partial class RegisterResponse : OneOfBase<IdentityErrorResponse, RegisterSuccessResponse>
-    {
-    }
 }
