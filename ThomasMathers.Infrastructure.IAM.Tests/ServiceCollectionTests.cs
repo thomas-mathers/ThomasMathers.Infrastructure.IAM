@@ -6,11 +6,11 @@ using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests;
 
-public class IServiceCollectionTests
+public class ServiceCollectionTests
 {
     private readonly IServiceCollection _services;
 
-    public IServiceCollectionTests()
+    public ServiceCollectionTests()
     {
         _services = new ServiceCollection();
     }

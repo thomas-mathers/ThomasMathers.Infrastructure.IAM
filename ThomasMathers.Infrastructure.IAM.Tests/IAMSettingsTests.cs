@@ -12,7 +12,7 @@ public class IAMSettingsTests
     [InlineData("{\"IAMSettings\": {}}")]
     public void FromConfigurationSection_NoOverridesSpecified_ReturnsCorrectDefaults(string configJson)
     {
-        var configuration = IConfigurationBuilder.Build(configJson);
+        var configuration = ConfigurationBuilder.Build(configJson);
 
         // Act
         var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
@@ -50,7 +50,7 @@ public class IAMSettingsTests
                 ConnectionString = connectionString
             }
         });
-        var configuration = IConfigurationBuilder.Build(json);
+        var configuration = ConfigurationBuilder.Build(json);
 
         // Act
         var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
@@ -79,7 +79,7 @@ public class IAMSettingsTests
                 }
             }
         });
-        var configuration = IConfigurationBuilder.Build(json);
+        var configuration = ConfigurationBuilder.Build(json);
 
         // Act
         var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
@@ -128,7 +128,7 @@ public class IAMSettingsTests
                 }
             }
         });
-        var configuration = IConfigurationBuilder.Build(json);
+        var configuration = ConfigurationBuilder.Build(json);
 
         // Act
         var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
@@ -161,7 +161,7 @@ public class IAMSettingsTests
                 }
             }
         });
-        var configuration = IConfigurationBuilder.Build(json);
+        var configuration = ConfigurationBuilder.Build(json);
 
         // Act
         var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));

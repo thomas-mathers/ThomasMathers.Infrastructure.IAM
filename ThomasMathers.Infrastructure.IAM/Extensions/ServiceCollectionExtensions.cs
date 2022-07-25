@@ -14,7 +14,7 @@ using ThomasMathers.Infrastructure.IAM.Settings;
 
 namespace ThomasMathers.Infrastructure.IAM.Extensions;
 
-public static class IServiceCollectionExtensions
+public static class ServiceCollectionExtensions
 {
     public static void AddIAM(this IServiceCollection services, IConfiguration configuration)
     {

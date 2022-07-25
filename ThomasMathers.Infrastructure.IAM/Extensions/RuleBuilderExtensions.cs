@@ -3,7 +3,7 @@ using ThomasMathers.Infrastructure.IAM.Settings;
 
 namespace ThomasMathers.Infrastructure.IAM.Extensions;
 
-public static class IRuleBuilderExtensions
+public static class RuleBuilderExtensions
 {
     public static IRuleBuilder<T, string> Username<T>(this IRuleBuilder<T, string> ruleBuilder,
         UserSettings userSettings)
