@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using ThomasMathers.Infrastructure.IAM.Builders;
 using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Mappers;
 using ThomasMathers.Infrastructure.IAM.Services;
@@ -23,7 +24,7 @@ public static class ServiceCollectionExtensions
 
     public static void AddIam(this IServiceCollection services, IConfigurationSection configurationSection)
     {
-        services.AddIam(IamSettings.FromConfigurationSection(configurationSection));
+        services.AddIam(IamSettingsBuilder.Build(configurationSection));
     }
 
     public static void AddIam(this IServiceCollection services, IamSettings iamSettings)

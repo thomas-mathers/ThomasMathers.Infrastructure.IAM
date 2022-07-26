@@ -4,23 +4,23 @@ using ThomasMathers.Infrastructure.IAM.Emails.Emails;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 
-namespace ThomasMathers.Infrastructure.IAM.Emails.Mappers;
+namespace ThomasMathers.Infrastructure.IAM.Emails.Builders;
 
-public interface IResetPasswordEmailMapper
+public interface IResetPasswordEmailBuilder
 {
-    public TemplateEmailMessage<ResetPasswordEmail> Map(ResetPasswordNotification notification);
+    public TemplateEmailMessage<ResetPasswordEmail> Build(ResetPasswordNotification notification);
 }
 
-public class ResetPasswordEmailMapper : IResetPasswordEmailMapper
+public class ResetPasswordEmailBuilder : IResetPasswordEmailBuilder
 {
     private readonly ResetPasswordEmailSettings _emailSettings;
 
-    public ResetPasswordEmailMapper(ResetPasswordEmailSettings emailSettings)
+    public ResetPasswordEmailBuilder(ResetPasswordEmailSettings emailSettings)
     {
         _emailSettings = emailSettings;
     }
 
-    public TemplateEmailMessage<ResetPasswordEmail> Map(ResetPasswordNotification notification)
+    public TemplateEmailMessage<ResetPasswordEmail> Build(ResetPasswordNotification notification)
     {
         var url = QueryHelpers.AddQueryString(_emailSettings.ChangePasswordBaseUri, "t", notification.Token);
 

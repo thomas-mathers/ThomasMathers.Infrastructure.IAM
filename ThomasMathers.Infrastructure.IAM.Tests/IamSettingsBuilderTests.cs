@@ -1,21 +1,22 @@
 ﻿using System.Text.Json;
+using ThomasMathers.Infrastructure.IAM.Builders;
 using ThomasMathers.Infrastructure.IAM.Settings;
 using ThomasMathers.Infrastructure.IAM.Tests.Helpers;
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests;
 
-public class IamSettingsTests
+public class IamSettingsBuilderTests
 {
     [Theory]
     [InlineData("{}")]
     [InlineData("{\"IamSettings\": {}}")]
-    public void FromConfigurationSection_NoOverridesSpecified_ReturnsCorrectDefaults(string configJson)
+    public void Build_NoOverridesSpecified_ReturnsCorrectDefaults(string configJson)
     {
         var configuration = ConfigurationBuilder.Build(configJson);
 
         // Act
-        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
+        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -41,7 +42,7 @@ public class IamSettingsTests
     [InlineData("")]
     [InlineData(
         "Server=tcp:myserver.database.windows.net,1433;Database=myDataBase;User ID=mylogin@myserver;Password=myPassword;Trusted_Connection=False;Encrypt=True;")]
-    public void FromConfigurationSection_ConnectionStringOverride_ReturnsOverride(string connectionString)
+    public void Build_ConnectionStringOverride_ReturnsOverride(string connectionString)
     {
         var json = JsonSerializer.Serialize(new
         {
@@ -53,7 +54,7 @@ public class IamSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
+        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -63,7 +64,7 @@ public class IamSettingsTests
     [Theory]
     [InlineData("", "", "", 0)]
     [InlineData("=l3`[bZB%;4cT$!nLM3v0<pR~N28*R", "issuer", "audience", 360)]
-    public void FromConfigurationSection_JwtOverride_ReturnsOverride(string key, string issuer, string audience,
+    public void Build_JwtOverride_ReturnsOverride(string key, string issuer, string audience,
         int lifespanInDays)
     {
         var json = JsonSerializer.Serialize(new
@@ -82,7 +83,7 @@ public class IamSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
+        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -110,7 +111,7 @@ public class IamSettingsTests
     [InlineData(true, 7, 2, true, false, true)]
     [InlineData(true, 5, 3, true, true, false)]
     [InlineData(true, 6, 1, true, true, true)]
-    public void FromConfigurationSection_PasswordSettingsOverride_ReturnsOverride(bool requireDigit, int requiredLength,
+    public void Build_PasswordSettingsOverride_ReturnsOverride(bool requireDigit, int requiredLength,
         int requiredUniqueChars, bool requireLowercase, bool requireNonAlphanumeric, bool requireUppercase)
     {
         var json = JsonSerializer.Serialize(new
@@ -131,7 +132,7 @@ public class IamSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
+        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -147,7 +148,7 @@ public class IamSettingsTests
     [Theory]
     [InlineData(true, "abcdefghijklmnopqrstuvwxyz")]
     [InlineData(false, "abcdefghijklmnopqrstuvwxyz")]
-    public void FromConfigurationSection_UserSettingsOverride_ReturnsOverride(bool requireUniqueEmail,
+    public void Build_UserSettingsOverride_ReturnsOverride(bool requireUniqueEmail,
         string allowedUserNameCharacters)
     {
         var json = JsonSerializer.Serialize(new
@@ -164,7 +165,7 @@ public class IamSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
+        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);

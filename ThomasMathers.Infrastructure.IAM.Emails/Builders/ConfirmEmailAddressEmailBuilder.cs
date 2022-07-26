@@ -4,23 +4,23 @@ using ThomasMathers.Infrastructure.IAM.Emails.Emails;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 
-namespace ThomasMathers.Infrastructure.IAM.Emails.Mappers;
+namespace ThomasMathers.Infrastructure.IAM.Emails.Builders;
 
-public interface IConfirmEmailAddressEmailMapper
+public interface IConfirmEmailAddressEmailBuilder
 {
-    public TemplateEmailMessage<ConfirmEmailAddressEmail> Map(UserRegisteredNotification notification);
+    public TemplateEmailMessage<ConfirmEmailAddressEmail> Build(UserRegisteredNotification notification);
 }
 
-public class ConfirmEmailAddressEmailMapper : IConfirmEmailAddressEmailMapper
+public class ConfirmEmailAddressEmailBuilder : IConfirmEmailAddressEmailBuilder
 {
     private readonly ConfirmEmailAddressEmailSettings _emailSettings;
 
-    public ConfirmEmailAddressEmailMapper(ConfirmEmailAddressEmailSettings emailSettings)
+    public ConfirmEmailAddressEmailBuilder(ConfirmEmailAddressEmailSettings emailSettings)
     {
         _emailSettings = emailSettings;
     }
 
-    public TemplateEmailMessage<ConfirmEmailAddressEmail> Map(UserRegisteredNotification notification)
+    public TemplateEmailMessage<ConfirmEmailAddressEmail> Build(UserRegisteredNotification notification)
     {
         var url = QueryHelpers.AddQueryString(_emailSettings.ConfirmEmailBaseUri, "t", notification.Token);
 

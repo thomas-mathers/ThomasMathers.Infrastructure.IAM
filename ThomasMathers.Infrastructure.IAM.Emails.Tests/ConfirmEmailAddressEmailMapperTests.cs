@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.WebUtilities;
 using ThomasMathers.Infrastructure.Email;
 using ThomasMathers.Infrastructure.IAM.Data;
-using ThomasMathers.Infrastructure.IAM.Emails.Mappers;
+using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using Xunit;
@@ -14,7 +14,7 @@ public class ConfirmEmailAddressEmailMapperTests
     private const string FromEmail = "no-reply@some-company.com";
     private const string ConfirmEmailBaseUri = "some-company.com";
     private const string TemplateId = "1";
-    private readonly ConfirmEmailAddressEmailMapper _sut;
+    private readonly ConfirmEmailAddressEmailBuilder _sut;
 
     public ConfirmEmailAddressEmailMapperTests()
     {
@@ -28,7 +28,7 @@ public class ConfirmEmailAddressEmailMapperTests
             },
             TemplateId = TemplateId
         };
-        _sut = new ConfirmEmailAddressEmailMapper(confirmEmailAddressEmailSettings);
+        _sut = new ConfirmEmailAddressEmailBuilder(confirmEmailAddressEmailSettings);
     }
 
     [Theory]
@@ -50,7 +50,7 @@ public class ConfirmEmailAddressEmailMapperTests
         var expectedLink = QueryHelpers.AddQueryString(ConfirmEmailBaseUri, "t", token);
 
         // Act
-        var actual = _sut.Map(notification);
+        var actual = _sut.Build(notification);
 
         // Assert
         Assert.NotNull(actual);

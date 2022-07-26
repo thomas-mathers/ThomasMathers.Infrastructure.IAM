@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using ThomasMathers.Infrastructure.Email;
 using ThomasMathers.Infrastructure.IAM.Data;
-using ThomasMathers.Infrastructure.IAM.Emails.Mappers;
+using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using Xunit;
@@ -14,7 +14,7 @@ public class ResetPasswordEmailMapperTests
     private const string FromEmail = "no-reply@some-company.com";
     private const string ChangePasswordBaseUri = "some-company.com";
     private const string TemplateId = "1";
-    private readonly ResetPasswordEmailMapper _sut;
+    private readonly ResetPasswordEmailBuilder _sut;
 
     public ResetPasswordEmailMapperTests()
     {
@@ -28,7 +28,7 @@ public class ResetPasswordEmailMapperTests
             },
             TemplateId = TemplateId
         };
-        _sut = new ResetPasswordEmailMapper(resetPasswordEmailSettings);
+        _sut = new ResetPasswordEmailBuilder(resetPasswordEmailSettings);
     }
 
     [Theory]
@@ -50,7 +50,7 @@ public class ResetPasswordEmailMapperTests
         var expectedLink = QueryHelpers.AddQueryString(ChangePasswordBaseUri, "t", token);
 
         // Act
-        var actual = _sut.Map(notification);
+        var actual = _sut.Build(notification);
 
         // Assert
         Assert.NotNull(actual);

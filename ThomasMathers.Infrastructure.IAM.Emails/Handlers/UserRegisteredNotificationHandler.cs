@@ -1,24 +1,24 @@
 ﻿using MediatR;
 using ThomasMathers.Infrastructure.Email.Services;
-using ThomasMathers.Infrastructure.IAM.Emails.Mappers;
+using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 
 namespace ThomasMathers.Infrastructure.IAM.Emails.Handlers;
 
 public class UserRegisteredNotificationHandler : INotificationHandler<UserRegisteredNotification>
 {
-    private readonly IConfirmEmailAddressEmailMapper _emailMapper;
+    private readonly IConfirmEmailAddressEmailBuilder _emailBuilder;
     private readonly IEmailService _emailService;
 
-    public UserRegisteredNotificationHandler(IEmailService emailService, IConfirmEmailAddressEmailMapper emailSettings)
+    public UserRegisteredNotificationHandler(IEmailService emailService, IConfirmEmailAddressEmailBuilder emailSettings)
     {
         _emailService = emailService;
-        _emailMapper = emailSettings;
+        _emailBuilder = emailSettings;
     }
 
     public Task Handle(UserRegisteredNotification notification, CancellationToken cancellationToken)
     {
-        var email = _emailMapper.Map(notification);
+        var email = _emailBuilder.Build(notification);
         return _emailService.SendTemplatedEmailAsync(email);
     }
 }
