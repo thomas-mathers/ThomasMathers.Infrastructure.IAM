@@ -3,7 +3,7 @@ using ThomasMathers.Infrastructure.IAM.Settings;
 
 namespace ThomasMathers.Infrastructure.IAM.Mappers;
 
-public class UserSettingsMapper
+public class UserOptionsMapper
 {
     public static UserOptions Map(UserSettings source)
     {

@@ -1,40 +1,24 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.WebUtilities;
-using ThomasMathers.Infrastructure.Email;
 using ThomasMathers.Infrastructure.Email.Services;
-using ThomasMathers.Infrastructure.IAM.Emails.Emails;
-using ThomasMathers.Infrastructure.IAM.Emails.Settings;
+using ThomasMathers.Infrastructure.IAM.Emails.Mappers;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 
 namespace ThomasMathers.Infrastructure.IAM.Emails.Handlers;
 
 public class ResetPasswordNotificationHandler : INotificationHandler<ResetPasswordNotification>
 {
+    private readonly IResetPasswordEmailMapper _emailMapper;
     private readonly IEmailService _emailService;
-    private readonly ResetPasswordEmailSettings _emailSettings;
 
-    public ResetPasswordNotificationHandler(IEmailService emailService, ResetPasswordEmailSettings emailSettings)
+    public ResetPasswordNotificationHandler(IEmailService emailService, IResetPasswordEmailMapper emailMapper)
     {
         _emailService = emailService;
-        _emailSettings = emailSettings;
+        _emailMapper = emailMapper;
     }
 
     public Task Handle(ResetPasswordNotification notification, CancellationToken cancellationToken)
     {
-        var url = QueryHelpers.AddQueryString(_emailSettings.ChangePasswordBaseUri, "t", notification.Token);
-
-        var email = new TemplateEmailMessage<ResetPasswordEmail>
-        {
-            From = _emailSettings.From,
-            To = new EmailAddress(notification.User.Email, notification.User.UserName),
-            TemplateId = _emailSettings.TemplateId,
-            Payload = new ResetPasswordEmail
-            {
-                Username = notification.User.UserName,
-                Link = url
-            }
-        };
-
+        var email = _emailMapper.Map(notification);
         return _emailService.SendTemplatedEmailAsync(email);
     }
 }

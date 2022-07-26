@@ -3,7 +3,7 @@ using ThomasMathers.Infrastructure.IAM.Settings;
 
 namespace ThomasMathers.Infrastructure.IAM.Mappers;
 
-public static class PasswordSettingsMapper
+public static class PasswordOptionsMapper
 {
     public static PasswordOptions Map(PasswordSettings source)
     {

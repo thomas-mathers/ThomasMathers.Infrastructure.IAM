@@ -48,8 +48,8 @@ public class AuthServiceTests
         _accessTokenGeneratorMock = new Mock<IAccessTokenGenerator>();
 
         _sut = new AuthService(
-            _signInManagerMock.Object, 
-            _userManagerMock.Object, 
+            _signInManagerMock.Object,
+            _userManagerMock.Object,
             _accessTokenGeneratorMock.Object,
             Mock.Of<IMediator>());
     }

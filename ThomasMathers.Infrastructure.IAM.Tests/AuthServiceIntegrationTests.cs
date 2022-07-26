@@ -59,7 +59,10 @@ public class AuthServiceIntegrationTests
         // Arrange
         await _userManager.CreateAsync(_user, Password2);
 
-        for (var i = 0; i < 5; i++) await _sut.Login(Username, Password1);
+        for (var i = 0; i < 5; i++)
+        {
+            await _sut.Login(Username, Password1);
+        }
 
         // Act
         var loginResponse = await _sut.Login(Username, Password1);

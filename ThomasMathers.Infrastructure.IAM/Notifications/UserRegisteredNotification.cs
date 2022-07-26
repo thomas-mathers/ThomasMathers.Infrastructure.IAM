@@ -6,5 +6,5 @@ namespace ThomasMathers.Infrastructure.IAM.Notifications;
 public record UserRegisteredNotification : INotification
 {
     public string Token { get; init; } = string.Empty;
-    public User User { get; init; } = new User();
+    public User User { get; init; } = new();
 }

@@ -5,17 +5,17 @@ using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests;
 
-public class IAMSettingsTests
+public class IamSettingsTests
 {
     [Theory]
     [InlineData("{}")]
-    [InlineData("{\"IAMSettings\": {}}")]
+    [InlineData("{\"IamSettings\": {}}")]
     public void FromConfigurationSection_NoOverridesSpecified_ReturnsCorrectDefaults(string configJson)
     {
         var configuration = ConfigurationBuilder.Build(configJson);
 
         // Act
-        var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
+        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -45,7 +45,7 @@ public class IAMSettingsTests
     {
         var json = JsonSerializer.Serialize(new
         {
-            IAMSettings = new IAMSettings
+            IAMSettings = new IamSettings
             {
                 ConnectionString = connectionString
             }
@@ -53,7 +53,7 @@ public class IAMSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
+        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -68,7 +68,7 @@ public class IAMSettingsTests
     {
         var json = JsonSerializer.Serialize(new
         {
-            IAMSettings = new IAMSettings
+            IAMSettings = new IamSettings
             {
                 JwtTokenSettings = new JwtTokenSettings
                 {
@@ -82,7 +82,7 @@ public class IAMSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
+        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -115,7 +115,7 @@ public class IAMSettingsTests
     {
         var json = JsonSerializer.Serialize(new
         {
-            IAMSettings = new IAMSettings
+            IAMSettings = new IamSettings
             {
                 PasswordSettings = new PasswordSettings
                 {
@@ -131,7 +131,7 @@ public class IAMSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
+        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);
@@ -152,7 +152,7 @@ public class IAMSettingsTests
     {
         var json = JsonSerializer.Serialize(new
         {
-            IAMSettings = new IAMSettings
+            IAMSettings = new IamSettings
             {
                 UserSettings = new UserSettings
                 {
@@ -164,7 +164,7 @@ public class IAMSettingsTests
         var configuration = ConfigurationBuilder.Build(json);
 
         // Act
-        var actual = IAMSettings.FromConfigurationSection(configuration.GetSection("IAMSettings"));
+        var actual = IamSettings.FromConfigurationSection(configuration.GetSection("IamSettings"));
 
         // Assert
         Assert.NotNull(actual);

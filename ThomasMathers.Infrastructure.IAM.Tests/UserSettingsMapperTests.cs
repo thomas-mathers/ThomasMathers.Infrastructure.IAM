@@ -18,7 +18,7 @@ public class UserSettingsMapperTests
         };
 
         // Act
-        var actual = UserSettingsMapper.Map(userSettings);
+        var actual = UserOptionsMapper.Map(userSettings);
 
         // Assert
         Assert.NotNull(actual);

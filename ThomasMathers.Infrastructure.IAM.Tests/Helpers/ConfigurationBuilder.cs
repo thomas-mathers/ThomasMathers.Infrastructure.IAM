@@ -9,7 +9,8 @@ public static class ConfigurationBuilder
     public static IConfiguration Build(string json)
     {
         using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddJsonStream(memoryStream).Build();
+        var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+            .AddJsonStream(memoryStream).Build();
         return configurationBuilder;
     }
 }

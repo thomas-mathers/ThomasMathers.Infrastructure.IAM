@@ -2,16 +2,16 @@
 
 namespace ThomasMathers.Infrastructure.IAM.Settings;
 
-public record IAMSettings
+public record IamSettings
 {
     public string ConnectionString { get; init; } = string.Empty;
     public JwtTokenSettings JwtTokenSettings { get; init; } = new();
     public PasswordSettings PasswordSettings { get; init; } = new();
     public UserSettings UserSettings { get; init; } = new();
 
-    public static IAMSettings FromConfigurationSection(IConfigurationSection section)
+    public static IamSettings FromConfigurationSection(IConfigurationSection section)
     {
-        var settings = new IAMSettings();
+        var settings = new IamSettings();
         section.Bind(settings);
         return settings;
     }

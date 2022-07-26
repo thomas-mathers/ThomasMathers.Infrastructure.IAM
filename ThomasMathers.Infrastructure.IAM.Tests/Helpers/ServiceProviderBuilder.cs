@@ -11,7 +11,7 @@ internal static class ServiceProviderBuilder
     {
         var services = new ServiceCollection();
 
-        services.AddIAM(new IAMSettings());
+        services.AddIam(new IamSettings());
 
         var serviceProvider = services.BuildServiceProvider();
 

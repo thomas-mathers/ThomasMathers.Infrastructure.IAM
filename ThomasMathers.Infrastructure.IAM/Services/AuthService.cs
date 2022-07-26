@@ -11,7 +11,6 @@ public interface IAuthService
     Task<ConfirmEmailResponse> ConfirmEmail(string userName, string token);
     Task<LoginResponse> Login(string userName, string password);
     Task<ResetPasswordResponse> ResetPassword(string userName);
-
     Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token,
         string newPassword);
 }
@@ -36,17 +35,29 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.FindByNameAsync(userName);
 
-        if (user == null) return new NotFoundResponse();
+        if (user == null)
+        {
+            return new NotFoundResponse();
+        }
 
         var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, true);
 
         if (!signInResult.Succeeded)
         {
-            if (signInResult.IsLockedOut) return new UserLockedOutResponse();
+            if (signInResult.IsLockedOut)
+            {
+                return new UserLockedOutResponse();
+            }
 
-            if (signInResult.RequiresTwoFactor) return new LoginRequiresTwoFactorResponse();
+            if (signInResult.RequiresTwoFactor)
+            {
+                return new LoginRequiresTwoFactorResponse();
+            }
 
-            if (signInResult.IsNotAllowed) return new LoginIsNotAllowedResponse();
+            if (signInResult.IsNotAllowed)
+            {
+                return new LoginIsNotAllowedResponse();
+            }
 
             return new LoginFailureResponse();
         }
@@ -62,7 +73,10 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.FindByNameAsync(userName);
 
-        if (user == null) return new NotFoundResponse();
+        if (user == null)
+        {
+            return new NotFoundResponse();
+        }
 
         if (!string.IsNullOrEmpty(currentPassword))
         {
@@ -71,14 +85,20 @@ public class AuthService : IAuthService
                 currentPassword,
                 newPassword);
 
-            if (!changePasswordResult.Succeeded) return new IdentityErrorResponse(changePasswordResult.Errors);
+            if (!changePasswordResult.Succeeded)
+            {
+                return new IdentityErrorResponse(changePasswordResult.Errors);
+            }
 
             return new ChangePasswordSuccessResponse();
         }
 
         var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, newPassword);
 
-        if (!resetPasswordResult.Succeeded) return new IdentityErrorResponse(resetPasswordResult.Errors);
+        if (!resetPasswordResult.Succeeded)
+        {
+            return new IdentityErrorResponse(resetPasswordResult.Errors);
+        }
 
         return new ChangePasswordSuccessResponse();
     }
@@ -87,7 +107,10 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.FindByNameAsync(userName);
 
-        if (user == null) return new NotFoundResponse();
+        if (user == null)
+        {
+            return new NotFoundResponse();
+        }
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -104,11 +127,17 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.FindByNameAsync(userName);
 
-        if (user == null) return new NotFoundResponse();
+        if (user == null)
+        {
+            return new NotFoundResponse();
+        }
 
         var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
 
-        if (!confirmEmailResult.Succeeded) return new IdentityErrorResponse(confirmEmailResult.Errors);
+        if (!confirmEmailResult.Succeeded)
+        {
+            return new IdentityErrorResponse(confirmEmailResult.Errors);
+        }
 
         return new ConfirmEmailSuccessResponse();
     }

@@ -32,7 +32,10 @@ public class UserService : IUserService
     {
         var createResult = await _userManager.CreateAsync(user, password);
 
-        if (!createResult.Succeeded) return new IdentityErrorResponse(createResult.Errors);
+        if (!createResult.Succeeded)
+        {
+            return new IdentityErrorResponse(createResult.Errors);
+        }
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 

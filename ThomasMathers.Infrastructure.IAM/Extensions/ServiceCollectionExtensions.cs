@@ -16,31 +16,35 @@ namespace ThomasMathers.Infrastructure.IAM.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddIAM(this IServiceCollection services, IConfiguration configuration)
+    public static void AddIam(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddIAM(configuration.GetRequiredSection("IAMSettings"));
+        services.AddIam(configuration.GetRequiredSection("IamSettings"));
     }
 
-    public static void AddIAM(this IServiceCollection services, IConfigurationSection configurationSection)
+    public static void AddIam(this IServiceCollection services, IConfigurationSection configurationSection)
     {
-        services.AddIAM(IAMSettings.FromConfigurationSection(configurationSection));
+        services.AddIam(IamSettings.FromConfigurationSection(configurationSection));
     }
 
-    public static void AddIAM(this IServiceCollection services, IAMSettings iamSettings)
+    public static void AddIam(this IServiceCollection services, IamSettings iamSettings)
     {
         services.AddMediatR(GetMediatorAssemblies());
         services.AddLogging();
 
         if (string.IsNullOrEmpty(iamSettings.ConnectionString))
+        {
             services.AddDbContext<DatabaseContext>(optionsBuilder =>
             {
                 optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
             });
+        }
         else
+        {
             services.AddDbContext<DatabaseContext>(optionsBuilder =>
             {
                 optionsBuilder.UseSqlServer(iamSettings.ConnectionString);
             });
+        }
 
         services
             .AddAuthentication(options =>
@@ -69,8 +73,8 @@ public static class ServiceCollectionExtensions
         services
             .AddIdentity<User, Role>(options =>
             {
-                options.User = UserSettingsMapper.Map(iamSettings.UserSettings);
-                options.Password = PasswordSettingsMapper.Map(iamSettings.PasswordSettings);
+                options.User = UserOptionsMapper.Map(iamSettings.UserSettings);
+                options.Password = PasswordOptionsMapper.Map(iamSettings.PasswordSettings);
             })
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();

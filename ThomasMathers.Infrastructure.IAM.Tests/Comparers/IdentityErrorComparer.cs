@@ -7,9 +7,15 @@ internal class IdentityErrorComparer : IEqualityComparer<IdentityError>
 {
     public bool Equals(IdentityError? x, IdentityError? y)
     {
-        if (x == null && y == null) return true;
+        if (x == null && y == null)
+        {
+            return true;
+        }
 
-        if (x == null || y == null) return false;
+        if (x == null || y == null)
+        {
+            return false;
+        }
 
         return x.Code == y.Code;
     }

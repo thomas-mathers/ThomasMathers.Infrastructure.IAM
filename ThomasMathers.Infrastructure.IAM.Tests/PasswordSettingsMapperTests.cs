@@ -38,7 +38,7 @@ public class PasswordSettingsMapperTests
         };
 
         // Act
-        var actual = PasswordSettingsMapper.Map(source);
+        var actual = PasswordOptionsMapper.Map(source);
 
         // Assert
         Assert.NotNull(actual);
