@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
 
     public static void AddIamEmails(this IServiceCollection serviceCollection, IamEmailSettings iamEmailSettings)
     {
+        serviceCollection.AddLogging();
         serviceCollection.AddScoped<IConfirmEmailAddressEmailBuilder, ConfirmEmailAddressEmailBuilder>();
         serviceCollection.AddScoped<IResetPasswordEmailBuilder, ResetPasswordEmailBuilder>();
         serviceCollection.AddScoped(_ => iamEmailSettings);

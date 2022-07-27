@@ -8,6 +8,7 @@
     <PackageProjectUrl>https://github.com/thomas-mathers/ThomasMathers.Infrastructure.IAM</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/thomas-mathers/ThomasMathers.Infrastructure.IAM</RepositoryUrl>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>

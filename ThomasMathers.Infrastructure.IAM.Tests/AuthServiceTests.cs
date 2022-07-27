@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Moq;
 using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Services;
@@ -51,7 +52,8 @@ public class AuthServiceTests
             _signInManagerMock.Object,
             _userManagerMock.Object,
             _accessTokenGeneratorMock.Object,
-            Mock.Of<IMediator>());
+            Mock.Of<IMediator>(),
+            Mock.Of<ILogger<AuthService>>());
     }
 
     [Fact]

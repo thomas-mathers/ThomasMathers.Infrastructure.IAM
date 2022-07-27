@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Moq;
 using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Services;
@@ -21,7 +22,7 @@ public class UserServiceTests
             Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null
         );
 
-        _sut = new UserService(_userManagerMock.Object, Mock.Of<IMediator>());
+        _sut = new UserService(_userManagerMock.Object, Mock.Of<IMediator>(), Mock.Of<ILogger<UserService>>());
     }
 
     [Fact]
