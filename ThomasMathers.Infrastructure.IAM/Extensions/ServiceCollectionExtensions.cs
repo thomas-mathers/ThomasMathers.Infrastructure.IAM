@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
         {
             services.AddDbContext<DatabaseContext>(optionsBuilder =>
             {
-                optionsBuilder.UseSqlServer(iamSettings.ConnectionString);
+                optionsBuilder.UseSqlServer(iamSettings.ConnectionString, options => options.MigrationsAssembly(iamSettings.MigrationsAssembly));
             });
         }
 

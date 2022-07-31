@@ -75,8 +75,7 @@ public class AuthService : IAuthService
 
         _logger.LogInformation($"User {userName} has successfully logged in");
 
-        return new LoginSuccessResponse(user.Id, user.UserName, user.Email,
-            _accessTokenGenerator.GenerateAccessToken(claims));
+        return new LoginSuccessResponse(user, _accessTokenGenerator.GenerateAccessToken(claims));
     }
 
     public async Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token,

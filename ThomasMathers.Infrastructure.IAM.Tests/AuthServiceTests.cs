@@ -158,7 +158,7 @@ public class AuthServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsT5);
-        Assert.Equal(Username, result.AsT5.UserName);
+        Assert.Equal(Username, result.AsT5.User.UserName);
         Assert.Equal(AccessToken, result.AsT5.AccessToken);
     }
 

@@ -1,3 +1,5 @@
-﻿namespace ThomasMathers.Infrastructure.IAM.Responses;
+﻿using ThomasMathers.Infrastructure.IAM.Data;
 
-public record LoginSuccessResponse(Guid UserId, string UserName, string UserEmail, string AccessToken);
+namespace ThomasMathers.Infrastructure.IAM.Responses;
+
+public record LoginSuccessResponse(User User, string AccessToken);
