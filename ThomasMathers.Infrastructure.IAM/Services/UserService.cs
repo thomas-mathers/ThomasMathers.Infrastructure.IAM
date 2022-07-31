@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Notifications;
@@ -10,17 +11,27 @@ namespace ThomasMathers.Infrastructure.IAM.Services;
 public interface IUserService
 {
     Task<RegisterResponse> Register(User user, string password);
+    Task<User?> GetUserById(Guid id);
+    Task<List<User>> GetAllUsers();
+    Task DeleteUser(User user);
 }
 
 public class UserService : IUserService
 {
-    private readonly IMediator _mediator;
+    private readonly DatabaseContext _databaseContext;
     private readonly UserManager<User> _userManager;
-    private readonly ILogger<UserService> _logger; 
+    private readonly IMediator _mediator;
+    private readonly ILogger<UserService> _logger;
 
-
-    public UserService(UserManager<User> userManager, IMediator mediator, ILogger<UserService> logger)
+    public UserService
+    (
+        DatabaseContext databaseContext,
+        UserManager<User> userManager, 
+        IMediator mediator, 
+        ILogger<UserService> logger
+    )
     {
+        _databaseContext = databaseContext;
         _userManager = userManager;
         _mediator = mediator;
         _logger = logger;
@@ -49,5 +60,22 @@ public class UserService : IUserService
         });
 
         return new RegisterSuccessResponse(user);
+    }
+
+    public async Task<User?> GetUserById(Guid id)
+    {
+        var user = await _databaseContext.Users.FindAsync(id);
+        return user;
+    }
+
+    public Task<List<User>> GetAllUsers()
+    {
+        return _databaseContext.Users.ToListAsync();
+    }
+
+    public Task DeleteUser(User user)
+    {
+        _databaseContext.Users.Remove(user);
+        return _databaseContext.SaveChangesAsync();
     }
 }

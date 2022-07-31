@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +18,16 @@ public class UserServiceIntegrationTests
     private const string Email1 = "thomas.mathers.pro@gmail.com";
     private const string Email2 = "mathers_thomas@hotmail.com";
     private const string Password = "P@sSw0rd1!";
+
+    private static readonly Guid Id1 = Guid.Parse("40bc3980-1aa3-4e22-84c9-10b7bf0970bb");
+    private static readonly Guid Id2 = Guid.Parse("30e9b028-2293-4814-8196-2f71341fc274");
+    private static readonly Guid Id3 = Guid.Parse("9c2939f4-9790-49c4-ac41-58a443211043");
+
     private readonly IUserService _sut;
-    private readonly User _user1 = new() { UserName = Username1, Email = Email1 };
-    private readonly User _user2 = new() { UserName = Username1, Email = Email2 };
-    private readonly User _user3 = new() { UserName = Username2, Email = Email1 };
+    private readonly User _user1 = new() { Id = Id1, UserName = Username1, Email = Email1 };
+    private readonly User _user2 = new() { Id = Id2, UserName = Username1, Email = Email2 };
+    private readonly User _user3 = new() { Id = Id3, UserName = Username2, Email = Email1 };
+    private readonly User _user4 = new() { Id = Id2, UserName = Username2, Email = Email2 };
     private readonly UserManager<User> _userManager;
 
     public UserServiceIntegrationTests()
@@ -165,5 +172,66 @@ public class UserServiceIntegrationTests
         // Assert
         Assert.NotNull(registerResponse);
         Assert.True(registerResponse.IsT1);
+    }
+
+    [Fact]
+    public async Task GetUserById_UserExists_ReturnsUser()
+    {
+        // Arrange
+        await _userManager.CreateAsync(_user1, Password);
+
+        // Act
+        var actual = await _sut.GetUserById(Id1);
+
+        // Assert
+        Assert.NotNull(actual);
+        Assert.Equal(Id1, actual.Id);
+        Assert.Equal(Username1, actual.UserName);
+        Assert.Equal(Email1, actual.Email);
+    }
+
+    [Fact]
+    public async Task GetUserById_UserDoesNotExists_ReturnsNull()
+    {
+        // Act
+        var actual = await _sut.GetUserById(Id1);
+
+        // Assert
+        Assert.Null(actual);
+    }
+
+    [Fact]
+    public async Task GetAllUsers_ReturnsAll()
+    {
+        // Arrange
+        await _userManager.CreateAsync(_user1, Password);
+        await _userManager.CreateAsync(_user4, Password);
+
+        // Act
+        var actual = await _sut.GetAllUsers();
+
+        // Assert
+        Assert.NotNull(actual);
+        Assert.Equal(2, actual.Count);
+        Assert.Equal(Id1, actual[0].Id);
+        Assert.Equal(Username1, actual[0].UserName);
+        Assert.Equal(Email1, actual[0].Email);
+        Assert.Equal(Id2, actual[1].Id);
+        Assert.Equal(Username2, actual[1].UserName);
+        Assert.Equal(Email2, actual[1].Email);
+    }
+
+    [Fact]
+    public async Task DeleteUser_DeletesUser()
+    {
+        // Arrange
+        await _userManager.CreateAsync(_user1, Password);
+
+        // Act
+        await _sut.DeleteUser(_user1);
+        var user = await _userManager.FindByIdAsync(Id1.ToString());
+
+        // Assert
+        Assert.Null(user);
     }
 }
