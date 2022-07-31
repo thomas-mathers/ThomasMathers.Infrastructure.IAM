@@ -71,11 +71,11 @@ public class AuthService : IAuthService
             return new LoginFailureResponse();
         }
 
-        var claims = await _userManager.GetClaimsAsync(user);
-
         _logger.LogInformation($"User {userName} has successfully logged in");
 
-        return new LoginSuccessResponse(user, _accessTokenGenerator.GenerateAccessToken(claims));
+        var token = await _accessTokenGenerator.GenerateAccessToken(user);
+
+        return new LoginSuccessResponse(user, token);
     }
 
     public async Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token,

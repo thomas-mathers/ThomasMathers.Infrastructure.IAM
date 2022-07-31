@@ -1,30 +1,56 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Settings;
 
 namespace ThomasMathers.Infrastructure.IAM.Services;
 
 public interface IAccessTokenGenerator
 {
-    public string GenerateAccessToken(IEnumerable<Claim> user);
+    public Task<string> GenerateAccessToken(User user);
 }
 
 public class AccessTokenGenerator : IAccessTokenGenerator
 {
     private readonly SymmetricSecurityKey _key;
     private readonly JwtTokenSettings _settings;
+    private readonly UserManager<User> _userManager;
 
-    public AccessTokenGenerator(JwtTokenSettings settings)
+    public AccessTokenGenerator(UserManager<User> userManager, JwtTokenSettings settings)
     {
+        _userManager = userManager;
         _settings = settings;
         _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_settings.Key));
     }
 
-    public string GenerateAccessToken(IEnumerable<Claim> claims)
+    public async Task<string> GenerateAccessToken(User user)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
+        var userRoles = await _userManager.GetRolesAsync(user); 
+
+        var claims = new List<Claim>
+        {
+            new Claim("iss", _settings.Issuer),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        };
+
+        if (!string.IsNullOrEmpty(user.Email) && user.EmailConfirmed)
+        {
+            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+        }
+
+        if (!string.IsNullOrEmpty(user.PhoneNumber) && user.PhoneNumberConfirmed)
+        {
+            claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
+        }
+
+        foreach (var role in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -34,6 +60,8 @@ public class AccessTokenGenerator : IAccessTokenGenerator
             Audience = _settings.Audience,
             SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature)
         };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
