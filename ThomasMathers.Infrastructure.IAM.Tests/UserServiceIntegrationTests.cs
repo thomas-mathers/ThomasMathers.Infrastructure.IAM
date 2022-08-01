@@ -23,17 +23,26 @@ public class UserServiceIntegrationTests
     private static readonly Guid Id2 = Guid.Parse("30e9b028-2293-4814-8196-2f71341fc274");
     private static readonly Guid Id3 = Guid.Parse("9c2939f4-9790-49c4-ac41-58a443211043");
 
+    private static readonly Role Role = new()
+    {
+        Id = Guid.Parse("00d1d816-2c26-4207-a7e7-4972d75bd59f"),
+        Name = "admin",
+        NormalizedName = "ADMIN",
+    };
+
     private readonly IUserService _sut;
     private readonly User _user1 = new() { Id = Id1, UserName = Username1, Email = Email1 };
     private readonly User _user2 = new() { Id = Id2, UserName = Username1, Email = Email2 };
     private readonly User _user3 = new() { Id = Id3, UserName = Username2, Email = Email1 };
     private readonly User _user4 = new() { Id = Id2, UserName = Username2, Email = Email2 };
     private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
 
     public UserServiceIntegrationTests()
     {
         var serviceProvider = ServiceProviderBuilder.Build();
 
+        _roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
         _userManager = serviceProvider.GetRequiredService<UserManager<User>>();
         _sut = serviceProvider.GetRequiredService<IUserService>();
     }
@@ -55,7 +64,7 @@ public class UserServiceIntegrationTests
         };
 
         // Act
-        var registerResponse = await _sut.Register(new User { UserName = Username1, Email = email }, Password);
+        var registerResponse = await _sut.Register(new User { UserName = Username1, Email = email }, Role.Name, Password);
 
         // Assert
         Assert.NotNull(registerResponse);
@@ -79,7 +88,7 @@ public class UserServiceIntegrationTests
         };
 
         // Act
-        var registerResponse = await _sut.Register(new User { UserName = username, Email = Email1 }, Password);
+        var registerResponse = await _sut.Register(new User { UserName = username, Email = Email1 }, Role.Name, Password);
 
         // Assert
         Assert.NotNull(registerResponse);
@@ -109,7 +118,7 @@ public class UserServiceIntegrationTests
         };
 
         // Act
-        var registerResponse = await _sut.Register(_user1, password);
+        var registerResponse = await _sut.Register(_user1, Role.Name, password);
 
         // Assert
         Assert.NotNull(registerResponse);
@@ -132,7 +141,7 @@ public class UserServiceIntegrationTests
         };
 
         // Act
-        var registerResponse = await _sut.Register(_user2, Password);
+        var registerResponse = await _sut.Register(_user2, Role.Name, Password);
 
         // Assert
         Assert.NotNull(registerResponse);
@@ -155,7 +164,7 @@ public class UserServiceIntegrationTests
         };
 
         // Act
-        var registerResponse = await _sut.Register(_user3, Password);
+        var registerResponse = await _sut.Register(_user3, Role.Name, Password);
 
         // Assert
         Assert.NotNull(registerResponse);
@@ -164,14 +173,28 @@ public class UserServiceIntegrationTests
     }
 
     [Fact]
-    public async Task Register_Valid_ReturnsSuccessResponse()
+    public async Task Register_RoleDoesNotExist_ReturnsNotFoundResponse()
     {
         // Act
-        var registerResponse = await _sut.Register(_user1, Password);
+        var registerResponse = await _sut.Register(_user1, Role.Name, Password);
 
         // Assert
         Assert.NotNull(registerResponse);
         Assert.True(registerResponse.IsT1);
+    }
+
+    [Fact]
+    public async Task Register_Valid_ReturnsSuccessResponse()
+    {
+        // Arrange
+        await _roleManager.CreateAsync(Role);
+
+        // Act
+        var registerResponse = await _sut.Register(_user1, Role.Name, Password);
+
+        // Assert
+        Assert.NotNull(registerResponse);
+        Assert.True(registerResponse.IsT2);
     }
 
     [Fact]
