@@ -37,12 +37,12 @@ public class AccessTokenGenerator : IAccessTokenGenerator
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
 
-        if (!string.IsNullOrEmpty(user.Email) && user.EmailConfirmed)
+        if (!string.IsNullOrEmpty(user.Email))
         {
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
         }
 
-        if (!string.IsNullOrEmpty(user.PhoneNumber) && user.PhoneNumberConfirmed)
+        if (!string.IsNullOrEmpty(user.PhoneNumber))
         {
             claims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
         }

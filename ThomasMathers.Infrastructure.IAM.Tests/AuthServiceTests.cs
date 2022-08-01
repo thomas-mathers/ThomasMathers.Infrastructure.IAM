@@ -149,8 +149,8 @@ public class AuthServiceTests
             .Setup(x => x.CheckPasswordSignInAsync(_user, Password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.Success);
 
-        _accessTokenGeneratorMock.Setup(x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>()))
-            .Returns(AccessToken);
+        _accessTokenGeneratorMock.Setup(x => x.GenerateAccessToken(_user))
+            .ReturnsAsync(AccessToken);
 
         // Act
         var result = await _sut.Login(Username, Password);
