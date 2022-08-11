@@ -1,3 +1,5 @@
+name: (BuildDefinitionName)_(Year:yyyy).(Month).(Month).(DayOfMonth)$(Rev:.r)
+
 trigger:
 - master
 
@@ -6,9 +8,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-
-name: (BuildDefinitionName)_(Year:yyyy).(Month).(Month).(DayOfMonth)$(Rev:.r)
-
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
@@ -21,7 +20,6 @@ steps:
     command: 'test'
     projects: 'ThomasMathers.Infrastructure.IAM.Tests/ThomasMathers.Infrastructure.IAM.Tests.csproj'
 - task: NuGetCommand@2
-  displayName: 'NuGet pack'
   inputs:
     command: 'pack'
     packagesToPack: 'ThomasMathers.Infrastructure.IAM/ThomasMathers.Infrastructure.IAM.csproj'
