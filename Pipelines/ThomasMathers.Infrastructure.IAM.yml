@@ -26,6 +26,7 @@ steps:
   displayName: 'dotnet test'
   inputs:
     command: 'test'
+    arguments: '--configuration $(buildConfiguration)'
     projects: 'ThomasMathers.Infrastructure.IAM.Tests/ThomasMathers.Infrastructure.IAM.Tests.csproj'
 - task: NuGetCommand@2
   displayName: 'NuGet pack'
