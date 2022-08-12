@@ -13,6 +13,7 @@ steps:
   displayName: 'Get SemVer'
   inputs:
     versionSpec: '1.3.0'
+- task: gitversion/execute@0
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
