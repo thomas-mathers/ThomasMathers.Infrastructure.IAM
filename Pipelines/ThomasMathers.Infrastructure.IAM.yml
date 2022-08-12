@@ -15,7 +15,7 @@ steps:
   displayName: 'GitVersion execute'
   inputs:
     useConfigFile: true
-    configFilePath: 'gitversion.yml'
+    configFilePath: 'GitVersion.yml'
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
