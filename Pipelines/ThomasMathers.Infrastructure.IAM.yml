@@ -9,6 +9,10 @@ pool:
 variables:
   buildConfiguration: 'Release'
 steps:
+- task: gitversion/setup@0
+  displayName: 'Get SemVer'
+  inputs:
+    versionSpec: '1.3.0'
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
@@ -21,11 +25,11 @@ steps:
     command: 'test'
     projects: 'ThomasMathers.Infrastructure.IAM.Tests/ThomasMathers.Infrastructure.IAM.Tests.csproj'
 - task: NuGetCommand@2
-  displayName: 'NuGet pack'
   inputs:
     command: 'pack'
     packagesToPack: 'ThomasMathers.Infrastructure.IAM/ThomasMathers.Infrastructure.IAM.csproj'
-    versioningScheme: 'byBuildNumber'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'GitVersion.NuGetVersion'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
   inputs:
