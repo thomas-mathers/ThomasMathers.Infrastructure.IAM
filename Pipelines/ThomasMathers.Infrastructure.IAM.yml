@@ -12,9 +12,10 @@ steps:
   inputs:
     versionSpec: '5.x'
 - task: gitversion/execute@0
+  displayName: 'GitVersion execute'
   inputs:
     useConfigFile: true
-    configFilePath: 'gitversion.yml'
+    configFilePath: 'GitVersion.yml'
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
@@ -25,8 +26,10 @@ steps:
   displayName: 'dotnet test'
   inputs:
     command: 'test'
+    arguments: '--configuration $(buildConfiguration)'
     projects: 'ThomasMathers.Infrastructure.IAM.Tests/ThomasMathers.Infrastructure.IAM.Tests.csproj'
 - task: NuGetCommand@2
+  displayName: 'NuGet pack'
   inputs:
     command: 'pack'
     packagesToPack: 'ThomasMathers.Infrastructure.IAM/ThomasMathers.Infrastructure.IAM.csproj'
