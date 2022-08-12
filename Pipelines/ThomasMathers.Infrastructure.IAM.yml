@@ -12,6 +12,7 @@ steps:
   inputs:
     versionSpec: '5.x'
 - task: gitversion/execute@0
+  displayName: 'GitVersion execute'
   inputs:
     useConfigFile: true
     configFilePath: 'gitversion.yml'
@@ -27,6 +28,7 @@ steps:
     command: 'test'
     projects: 'ThomasMathers.Infrastructure.IAM.Tests/ThomasMathers.Infrastructure.IAM.Tests.csproj'
 - task: NuGetCommand@2
+  displayName: 'NuGet pack'
   inputs:
     command: 'pack'
     packagesToPack: 'ThomasMathers.Infrastructure.IAM/ThomasMathers.Infrastructure.IAM.csproj'
