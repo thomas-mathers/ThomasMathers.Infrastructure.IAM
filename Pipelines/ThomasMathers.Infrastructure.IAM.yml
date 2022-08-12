@@ -10,9 +10,8 @@ variables:
   buildConfiguration: 'Release'
 steps:
 - task: gitversion/setup@0
-  displayName: 'Get SemVer'
   inputs:
-    versionSpec: '1.3.0'
+    versionSpec: '5.x'
 - task: gitversion/execute@0
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
