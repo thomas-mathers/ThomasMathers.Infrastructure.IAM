@@ -45,5 +45,5 @@ steps:
   displayName: 'Publish artifact'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'ThomasMathers.Infrastructure.IAM.Emails'
+    ArtifactName: 'drop'
     publishLocation: 'Container'
