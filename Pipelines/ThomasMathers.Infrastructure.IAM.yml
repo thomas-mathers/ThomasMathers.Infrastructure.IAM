@@ -1,5 +1,11 @@
 trigger:
-- master
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - ThomasMathers.Infrastructure.IAM
+      - ThomasMathers.Infrastructure.IAM.Tests
 
 pool:
   vmImage: ubuntu-latest
