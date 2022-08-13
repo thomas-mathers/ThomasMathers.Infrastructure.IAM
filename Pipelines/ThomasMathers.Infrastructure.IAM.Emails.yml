@@ -2,8 +2,8 @@ variables:
   majorVersion: '1'
   minorVersion: '3'
   buildConfiguration: 'Release'
-  projectName: 'ThomasMathers.Infrastructure.IAM'
-  testProjectName: 'ThomasMathers.Infrastructure.IAM.Tests'
+  projectName: 'ThomasMathers.Infrastructure.IAM.Emails'
+  testProjectName: 'ThomasMathers.Infrastructure.IAM.Emails.Tests'
 
 name: '$(majorVersion).$(minorVersion).$(Rev:r)'
 
