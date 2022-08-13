@@ -1,9 +1,11 @@
-name: '1.3.$(Rev:r)'
-
 variables:
+  majorVersion: '1'
+  minorVersion: '3'
   buildConfiguration: 'Release'
   projectName: 'ThomasMathers.Infrastructure.IAM'
   testProjectName: 'ThomasMathers.Infrastructure.IAM.Tests'
+
+name: '$(majorVersion).$(minorVersion).$(Rev:r)'
 
 trigger:
   branches:
