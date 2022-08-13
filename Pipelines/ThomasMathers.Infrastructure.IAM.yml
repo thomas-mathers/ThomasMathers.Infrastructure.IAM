@@ -1,21 +1,21 @@
 name: '1.3.$(Rev:r)'
 
+variables:
+  buildConfiguration: 'Release'
+  projectName: 'ThomasMathers.Infrastructure.IAM'
+  testProjectName: 'ThomasMathers.Infrastructure.IAM.Tests'
+
 trigger:
   branches:
     include:
       - master
   paths:
     include:
-      - ThomasMathers.Infrastructure.IAM
-      - ThomasMathers.Infrastructure.IAM.Tests
+      - $(projectName)
+      - $(testProjectName)
 
 pool:
   vmImage: ubuntu-latest
-
-variables:
-  buildConfiguration: 'Release'
-  projectName: 'ThomasMathers.Infrastructure.IAM'
-  testProjectName: 'ThomasMathers.Infrastructure.IAM.Tests'
 
 steps:
 - task: DotNetCoreCLI@2
