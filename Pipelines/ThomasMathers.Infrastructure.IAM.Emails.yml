@@ -1,0 +1,49 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - ThomasMathers.Infrastructure.IAM.Emails
+      - ThomasMathers.Infrastructure.IAM.Emails.Tests
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  buildConfiguration: 'Release'
+steps:
+- task: gitversion/setup@0
+  displayName: 'GitVersion setup'
+  inputs:
+    versionSpec: '5.x'
+- task: gitversion/execute@0
+  displayName: 'GitVersion execute'
+  inputs:
+    useConfigFile: true
+    configFilePath: 'GitVersion.yml'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'ThomasMathers.Infrastructure.IAM.Emails/ThomasMathers.Infrastructure.IAM.Emails.csproj'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'ThomasMathers.Infrastructure.IAM.Emails.Tests/ThomasMathers.Infrastructure.IAM.Emails.Tests.csproj'
+- task: NuGetCommand@2
+  displayName: 'NuGet pack'
+  inputs:
+    command: 'pack'
+    packagesToPack: 'ThomasMathers.Infrastructure.IAM.Emails/ThomasMathers.Infrastructure.IAM.Emails.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'GitVersion.NuGetVersion'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
