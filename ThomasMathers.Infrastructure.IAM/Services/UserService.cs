@@ -10,10 +10,11 @@ namespace ThomasMathers.Infrastructure.IAM.Services;
 
 public interface IUserService
 {
-    Task<RegisterResponse> Register(User user, string roleName, string password);
-    Task<User?> GetUserById(Guid id);
-    Task<List<User>> GetAllUsers();
-    Task DeleteUser(User user);
+    Task<RegisterResponse> Register(User user, string roleName, string? password = null, CancellationToken cancellationToken = default);
+    Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = default);
+    Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default);
+    Task DeleteUser(User user, CancellationToken cancellationToken = default);
 }
 
 public class UserService : IUserService
@@ -40,13 +41,15 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<RegisterResponse> Register(User user, string roleName, string password)
+    public async Task<RegisterResponse> Register(User user, string roleName, string? password = null, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation($"Registering {user}");
 
-        using (var transaction = await _databaseContext.Database.BeginTransactionAsync())
+        using (var transaction = await _databaseContext.Database.BeginTransactionAsync(cancellationToken))
         {
-            var createResult = await _userManager.CreateAsync(user, password);
+            var createResult = password != null
+                ? await _userManager.CreateAsync(user, password)
+                : await _userManager.CreateAsync(user);
 
             if (!createResult.Succeeded)
             {
@@ -69,7 +72,7 @@ public class UserService : IUserService
                 return new IdentityErrorResponse(addToRoleResult.Errors);
             }
 
-            await transaction.CommitAsync();
+            await transaction.CommitAsync(cancellationToken);
         }
 
         var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -80,25 +83,29 @@ public class UserService : IUserService
         {
             User = user,
             Token = emailConfirmationToken
-        });
+        }, cancellationToken);
 
         return new RegisterSuccessResponse(user);
     }
 
-    public async Task<User?> GetUserById(Guid id)
+    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default)
     {
-        var user = await _databaseContext.Users.FindAsync(id);
-        return user;
+        return _databaseContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken: cancellationToken);
     }
 
-    public Task<List<User>> GetAllUsers()
+    public Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = default)
     {
-        return _databaseContext.Users.ToListAsync();
+        return _databaseContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
-    public Task DeleteUser(User user)
+    public Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
+    {
+        return _databaseContext.Users.ToListAsync(cancellationToken);
+    }
+
+    public Task DeleteUser(User user, CancellationToken cancellationToken = default)
     {
         _databaseContext.Users.Remove(user);
-        return _databaseContext.SaveChangesAsync();
+        return _databaseContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -82,6 +82,7 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
 
+        services.AddScoped<ISocialAuthService, SocialAuthService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAccessTokenGenerator, AccessTokenGenerator>();

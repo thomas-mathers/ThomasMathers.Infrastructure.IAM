@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ThomasMathers.Infrastructure.IAM.Data;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using ThomasMathers.Infrastructure.IAM.Responses;
+using ThomasMathers.Infrastructure.IAM.Social.Services;
 
 namespace ThomasMathers.Infrastructure.IAM.Services;
 
@@ -18,14 +19,19 @@ public interface IAuthService
 
 public class AuthService : IAuthService
 {
-    private readonly IAccessTokenGenerator _accessTokenGenerator;
-    private readonly IMediator _mediator;
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
+    private readonly IAccessTokenGenerator _accessTokenGenerator;
+    private readonly IMediator _mediator;
     private readonly ILogger<AuthService> _logger;
 
-    public AuthService(SignInManager<User> signInManager, UserManager<User> userManager,
-        IAccessTokenGenerator accessTokenGenerator, IMediator mediator, ILogger<AuthService> logger)
+    public AuthService(
+        SignInManager<User> signInManager, 
+        UserManager<User> userManager,
+        IAccessTokenGenerator accessTokenGenerator,
+        IMediator mediator,
+        ILogger<AuthService> logger
+    )
     {
         _userManager = userManager;
         _signInManager = signInManager;

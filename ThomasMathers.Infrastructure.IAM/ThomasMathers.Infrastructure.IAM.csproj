@@ -27,4 +27,8 @@
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.223" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ThomasMathers.Infrastructure.IAM.Social\ThomasMathers.Infrastructure.IAM.Social.csproj" />
+  </ItemGroup>
+
 </Project>
