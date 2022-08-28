@@ -1,4 +1,5 @@
-﻿using ThomasMathers.Infrastructure.IAM.Mappers;
+﻿using AutoFixture;
+using ThomasMathers.Infrastructure.IAM.Mappers;
 using ThomasMathers.Infrastructure.IAM.Settings;
 using Xunit;
 
@@ -6,16 +7,18 @@ namespace ThomasMathers.Infrastructure.IAM.Tests.Mappers;
 
 public class UserOptionsMapperTests
 {
-    [Theory]
-    [InlineData(true, "abcdefghijklmnopqrstuvwxyz")]
-    [InlineData(false, "abcdefghijklmnopqrstuvwxyz")]
-    public void Map_MapsCorrectly(bool requireUniqueEmail, string allowedUserNameCharacters)
+    private readonly Fixture _fixture;
+
+    public UserOptionsMapperTests()
     {
-        var userSettings = new UserSettings
-        {
-            RequireUniqueEmail = requireUniqueEmail,
-            AllowedUserNameCharacters = allowedUserNameCharacters
-        };
+        _fixture = new Fixture();
+    }
+
+    [Fact]
+    public void Map_MapsCorrectly()
+    {
+        // Arrange
+        var userSettings = _fixture.Create<UserSettings>();
 
         // Act
         var actual = UserOptionsMapper.Map(userSettings);
@@ -23,7 +26,7 @@ public class UserOptionsMapperTests
         // Assert
         Assert.NotNull(actual);
         Assert.NotNull(actual);
-        Assert.Equal(requireUniqueEmail, actual.RequireUniqueEmail);
-        Assert.Equal(allowedUserNameCharacters, actual.AllowedUserNameCharacters);
+        Assert.Equal(userSettings.RequireUniqueEmail, actual.RequireUniqueEmail);
+        Assert.Equal(userSettings.AllowedUserNameCharacters, actual.AllowedUserNameCharacters);
     }
 }
