@@ -1,29 +1,29 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using ThomasMathers.Infrastructure.IAM.Data.EF;
-using ThomasMathers.Infrastructure.IAM.Responses;
 using ThomasMathers.Infrastructure.IAM.Services;
+using ThomasMathers.Infrastructure.IAM.Social.Responses;
 
 namespace ThomasMathers.Infrastructure.IAM.Social;
 
-public interface ISocialAuthService
+public interface IAuthService
 {
     public Task<SocialLoginResponse> ExternalLogin(string provider, string userId, string accessToken, string roleName, CancellationToken cancellationToken = default);
 }
 
-public class SocialAuthService : ISocialAuthService
+public class AuthService : IAuthService
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
     private readonly IAccessTokenGenerator _accessTokenGenerator;
     private readonly IReadOnlyDictionary<string, ISocialMediaProfileService> _socialMediaProfileServices;
-    private readonly ILogger<SocialAuthService> _logger;
+    private readonly ILogger<AuthService> _logger;
 
-    public SocialAuthService
+    public AuthService
     (
-        UserService userService,
+        IUserService userService,
         IAccessTokenGenerator accessTokenGenerator,
         IEnumerable<ISocialMediaProfileService> socialMediaProfileServices,
-        ILogger<SocialAuthService> logger
+        ILogger<AuthService> logger
     )
     {
         _userService = userService;
@@ -51,6 +51,8 @@ public class SocialAuthService : ISocialAuthService
             {
                 Email = profile.Email
             };
+
+            profile.UserId = user.Id;
 
             user.Profiles.Add(profile);
 
