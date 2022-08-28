@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using AutoFixture;
+using System.Text.Json;
 using ThomasMathers.Infrastructure.IAM.Builders;
 using ThomasMathers.Infrastructure.IAM.Settings;
 using ThomasMathers.Infrastructure.IAM.Tests.Helpers;
@@ -8,48 +9,20 @@ namespace ThomasMathers.Infrastructure.IAM.Tests.Builders;
 
 public class IamSettingsBuilderTests
 {
-    [Theory]
-    [InlineData("{}")]
-    [InlineData("{\"IamSettings\": {}}")]
-    public void Build_NoOverridesSpecified_ReturnsCorrectDefaults(string configJson)
+    private readonly Fixture _fixture;
+
+    public IamSettingsBuilderTests() 
     {
-        var configuration = ConfigurationBuilder.Build(configJson);
-
-        // Act
-        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
-
-        // Assert
-        Assert.NotNull(actual);
-        Assert.NotNull(actual.ConnectionString);
-        Assert.Empty(actual.ConnectionString);
-        Assert.NotNull(actual.PasswordSettings);
-        Assert.True(actual.PasswordSettings.RequireDigit);
-        Assert.Equal(6, actual.PasswordSettings.RequiredLength);
-        Assert.Equal(1, actual.PasswordSettings.RequiredUniqueChars);
-        Assert.True(actual.PasswordSettings.RequireLowercase);
-        Assert.True(actual.PasswordSettings.RequireNonAlphanumeric);
-        Assert.True(actual.PasswordSettings.RequireUppercase);
-        Assert.NotNull(actual.JwtTokenSettings);
-        Assert.NotNull(actual.JwtTokenSettings.Key);
-        Assert.NotEmpty(actual.JwtTokenSettings.Key);
-        Assert.NotNull(actual.JwtTokenSettings.Issuer);
-        Assert.NotNull(actual.JwtTokenSettings.Audience);
-        Assert.Equal(1, actual.JwtTokenSettings.LifespanInDays);
+        _fixture = new Fixture();
     }
 
-
-    [Theory]
-    [InlineData("")]
-    [InlineData(
-        "Server=tcp:myserver.database.windows.net,1433;Database=myDataBase;User ID=mylogin@myserver;Password=myPassword;Trusted_Connection=False;Encrypt=True;")]
-    public void Build_ConnectionStringOverride_ReturnsOverride(string connectionString)
+    [Fact]
+    public void Build_ReturnsCorrectValue()
     {
+        var iamSettings = _fixture.Create<IamSettings>();
         var json = JsonSerializer.Serialize(new
         {
-            IAMSettings = new IamSettings
-            {
-                ConnectionString = connectionString
-            }
+            IamSettings = iamSettings
         });
         var configuration = ConfigurationBuilder.Build(json);
 
@@ -58,119 +31,10 @@ public class IamSettingsBuilderTests
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(connectionString, actual.ConnectionString);
-    }
-
-    [Theory]
-    [InlineData("", "", "", 0)]
-    [InlineData("=l3`[bZB%;4cT$!nLM3v0<pR~N28*R", "issuer", "audience", 360)]
-    public void Build_JwtOverride_ReturnsOverride(string key, string issuer, string audience,
-        int lifespanInDays)
-    {
-        var json = JsonSerializer.Serialize(new
-        {
-            IAMSettings = new IamSettings
-            {
-                JwtTokenSettings = new JwtTokenSettings
-                {
-                    Key = key,
-                    Issuer = issuer,
-                    Audience = audience,
-                    LifespanInDays = lifespanInDays
-                }
-            }
-        });
-        var configuration = ConfigurationBuilder.Build(json);
-
-        // Act
-        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
-
-        // Assert
-        Assert.NotNull(actual);
-        Assert.NotNull(actual.JwtTokenSettings);
-        Assert.Equal(key, actual.JwtTokenSettings.Key);
-        Assert.Equal(issuer, actual.JwtTokenSettings.Issuer);
-        Assert.Equal(audience, actual.JwtTokenSettings.Audience);
-        Assert.Equal(lifespanInDays, actual.JwtTokenSettings.LifespanInDays);
-    }
-
-    [Theory]
-    [InlineData(false, 2, 1, false, false, false)]
-    [InlineData(false, 7, 3, false, false, true)]
-    [InlineData(false, 8, 4, false, true, false)]
-    [InlineData(false, 9, 6, false, true, true)]
-    [InlineData(false, 14, 2, true, false, false)]
-    [InlineData(false, 15, 3, true, false, true)]
-    [InlineData(false, 7, 5, true, true, false)]
-    [InlineData(false, 8, 9, true, true, true)]
-    [InlineData(true, 9, 5, false, false, false)]
-    [InlineData(true, 7, 4, false, false, true)]
-    [InlineData(true, 3, 2, false, true, false)]
-    [InlineData(true, 8, 5, false, true, true)]
-    [InlineData(true, 6, 3, true, false, false)]
-    [InlineData(true, 7, 2, true, false, true)]
-    [InlineData(true, 5, 3, true, true, false)]
-    [InlineData(true, 6, 1, true, true, true)]
-    public void Build_PasswordSettingsOverride_ReturnsOverride(bool requireDigit, int requiredLength,
-        int requiredUniqueChars, bool requireLowercase, bool requireNonAlphanumeric, bool requireUppercase)
-    {
-        var json = JsonSerializer.Serialize(new
-        {
-            IAMSettings = new IamSettings
-            {
-                PasswordSettings = new PasswordSettings
-                {
-                    RequireDigit = requireDigit,
-                    RequiredLength = requiredLength,
-                    RequiredUniqueChars = requiredUniqueChars,
-                    RequireLowercase = requireLowercase,
-                    RequireNonAlphanumeric = requireNonAlphanumeric,
-                    RequireUppercase = requireUppercase
-                }
-            }
-        });
-        var configuration = ConfigurationBuilder.Build(json);
-
-        // Act
-        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
-
-        // Assert
-        Assert.NotNull(actual);
-        Assert.NotNull(actual.PasswordSettings);
-        Assert.Equal(requireDigit, actual.PasswordSettings.RequireDigit);
-        Assert.Equal(requiredLength, actual.PasswordSettings.RequiredLength);
-        Assert.Equal(requiredUniqueChars, actual.PasswordSettings.RequiredUniqueChars);
-        Assert.Equal(requireLowercase, actual.PasswordSettings.RequireLowercase);
-        Assert.Equal(requireNonAlphanumeric, actual.PasswordSettings.RequireNonAlphanumeric);
-        Assert.Equal(requireUppercase, actual.PasswordSettings.RequireUppercase);
-    }
-
-    [Theory]
-    [InlineData(true, "abcdefghijklmnopqrstuvwxyz")]
-    [InlineData(false, "abcdefghijklmnopqrstuvwxyz")]
-    public void Build_UserSettingsOverride_ReturnsOverride(bool requireUniqueEmail,
-        string allowedUserNameCharacters)
-    {
-        var json = JsonSerializer.Serialize(new
-        {
-            IAMSettings = new IamSettings
-            {
-                UserSettings = new UserSettings
-                {
-                    RequireUniqueEmail = requireUniqueEmail,
-                    AllowedUserNameCharacters = allowedUserNameCharacters
-                }
-            }
-        });
-        var configuration = ConfigurationBuilder.Build(json);
-
-        // Act
-        var actual = IamSettingsBuilder.Build(configuration.GetSection("IamSettings"));
-
-        // Assert
-        Assert.NotNull(actual);
-        Assert.NotNull(actual.UserSettings);
-        Assert.Equal(requireUniqueEmail, actual.UserSettings.RequireUniqueEmail);
-        Assert.Equal(allowedUserNameCharacters, actual.UserSettings.AllowedUserNameCharacters);
+        Assert.Equal(iamSettings.ConnectionString, actual.ConnectionString);
+        Assert.Equal(iamSettings.MigrationsAssembly, actual.MigrationsAssembly);
+        Assert.Equal(iamSettings.JwtTokenSettings, actual.JwtTokenSettings);
+        Assert.Equal(iamSettings.PasswordSettings, actual.PasswordSettings);
+        Assert.Equal(iamSettings.UserSettings, actual.UserSettings);
     }
 }

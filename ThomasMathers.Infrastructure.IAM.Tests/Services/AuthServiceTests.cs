@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,26 +14,22 @@ namespace ThomasMathers.Infrastructure.IAM.Tests.Services;
 
 public class AuthServiceTests
 {
-    private const string Username = "USERNAME_001";
-    private const string Password = "PASSWORD_001";
-    private const string AccessToken = "ACCESS_TOKEN_001";
-    private const string PasswordResetToken = "PASSWORD_RESET_TOKEN_001";
+    private readonly Fixture _fixture;
+    private readonly User _user;
+    private readonly IdentityError[] _errors;
 
-    private static readonly IdentityError[] Errors =
-    {
-        new() { Code = "CODE_001", Description = "DESCRIPTION_001" },
-        new() { Code = "CODE_002", Description = "DESCRIPTION_002" },
-        new() { Code = "CODE_003", Description = "DESCRIPTION_003" }
-    };
-
-    private readonly Mock<IAccessTokenGenerator> _accessTokenGeneratorMock;
     private readonly Mock<SignInManager<User>> _signInManagerMock;
-    private readonly AuthService _sut;
-    private readonly User _user = new() { UserName = Username };
     private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<IAccessTokenGenerator> _accessTokenGeneratorMock;
+    private readonly AuthService _sut;
+
 
     public AuthServiceTests()
     {
+        _fixture = new Fixture();
+        _user = _fixture.Create<User>();
+        _errors = _fixture.CreateMany<IdentityError>().ToArray();
+
         _userManagerMock = new Mock<UserManager<User>>(
             Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null
         );
@@ -57,8 +55,12 @@ public class AuthServiceTests
     [Fact]
     public async Task Login_UserDoesNotExist_ReturnsNotFound()
     {
+        // Arrange
+        var username = _fixture.Create<string>();
+        var password = _fixture.Create<string>();
+
         // Act
-        var result = await _sut.Login(Username, Password);
+        var result = await _sut.Login(username, password);
 
         // Assert
         Assert.NotNull(result);
@@ -69,14 +71,16 @@ public class AuthServiceTests
     public async Task Login_LockedOut_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
         _signInManagerMock
-            .Setup(x => x.CheckPasswordSignInAsync(_user, Password, It.IsAny<bool>()))
+            .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.LockedOut);
 
         // Act
-        var result = await _sut.Login(Username, Password);
+        var result = await _sut.Login(_user.UserName, password);
 
         // Assert
         Assert.NotNull(result);
@@ -87,14 +91,16 @@ public class AuthServiceTests
     public async Task Login_TwoFactorRequired_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
         _signInManagerMock
-            .Setup(x => x.CheckPasswordSignInAsync(_user, Password, It.IsAny<bool>()))
+            .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.TwoFactorRequired);
 
         // Act
-        var result = await _sut.Login(Username, Password);
+        var result = await _sut.Login(_user.UserName, password);
 
         // Assert
         Assert.NotNull(result);
@@ -105,14 +111,16 @@ public class AuthServiceTests
     public async Task Login_NotAllowed_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
         _signInManagerMock
-            .Setup(x => x.CheckPasswordSignInAsync(_user, Password, It.IsAny<bool>()))
+            .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.NotAllowed);
 
         // Act
-        var result = await _sut.Login(Username, Password);
+        var result = await _sut.Login(_user.UserName, password);
 
         // Assert
         Assert.NotNull(result);
@@ -123,14 +131,16 @@ public class AuthServiceTests
     public async Task Login_Failed_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
         _signInManagerMock
-            .Setup(x => x.CheckPasswordSignInAsync(_user, Password, It.IsAny<bool>()))
+            .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.Failed);
 
         // Act
-        var result = await _sut.Login(Username, Password);
+        var result = await _sut.Login(_user.UserName, password);
 
         // Assert
         Assert.NotNull(result);
@@ -141,30 +151,37 @@ public class AuthServiceTests
     public async Task Login_Success_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+        var accessToken = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
         _signInManagerMock
-            .Setup(x => x.CheckPasswordSignInAsync(_user, Password, It.IsAny<bool>()))
+            .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.Success);
 
         _accessTokenGeneratorMock.Setup(x => x.GenerateAccessToken(_user))
-            .ReturnsAsync(AccessToken);
+            .ReturnsAsync(accessToken);
 
         // Act
-        var result = await _sut.Login(Username, Password);
+        var result = await _sut.Login(_user.UserName, password);
 
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsT5);
-        Assert.Equal(Username, result.AsT5.User.UserName);
-        Assert.Equal(AccessToken, result.AsT5.AccessToken);
+        Assert.Equal(_user.UserName, result.AsT5.User.UserName);
+        Assert.Equal(accessToken, result.AsT5.AccessToken);
     }
 
     [Fact]
     public async Task ChangePassword_UserDoesNotExist_ReturnsCorrectResponseType()
     {
+        // Arrange
+        var username = _fixture.Create<string>();
+        var password = _fixture.Create<string>();
+
         // Act
-        var result = await _sut.ChangePassword(Username, Password, string.Empty, Password);
+        var result = await _sut.ChangePassword(username, password, string.Empty, password);
 
         // Assert
         Assert.NotNull(result);
@@ -175,31 +192,35 @@ public class AuthServiceTests
     public async Task ChangePassword_IdentityErrors_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
-            .Setup(x => x.ChangePasswordAsync(_user, Password, Password))
-            .ReturnsAsync(IdentityResult.Failed(Errors));
+            .Setup(x => x.ChangePasswordAsync(_user, password, password))
+            .ReturnsAsync(IdentityResult.Failed(_errors));
 
         // Act
-        var result = await _sut.ChangePassword(Username, Password, string.Empty, Password);
+        var result = await _sut.ChangePassword(_user.UserName, password, string.Empty, password);
 
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsT1);
-        Assert.Equal(Errors, result.AsT1.Errors);
+        Assert.Equal(_errors, result.AsT1.Errors);
     }
 
     [Fact]
     public async Task ChangePassword_Success_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
-            .Setup(x => x.ChangePasswordAsync(_user, Password, Password))
+            .Setup(x => x.ChangePasswordAsync(_user, password, password))
             .ReturnsAsync(IdentityResult.Success);
 
         // Act
-        var result = await _sut.ChangePassword(Username, Password, string.Empty, Password);
+        var result = await _sut.ChangePassword(_user.UserName, password, string.Empty, password);
 
         // Assert
         Assert.NotNull(result);
@@ -209,8 +230,11 @@ public class AuthServiceTests
     [Fact]
     public async Task GeneratePasswordResetToken_UserDoesNotExist_ReturnsCorrectResponseType()
     {
+        // Arrange
+        var username = _fixture.Create<string>();
+
         // Act
-        var resetPasswordResponse = await _sut.ResetPassword(Username);
+        var resetPasswordResponse = await _sut.ResetPassword(username);
 
         // Assert
         Assert.NotNull(resetPasswordResponse);
@@ -221,25 +245,32 @@ public class AuthServiceTests
     public async Task GeneratePasswordResetToken_UserExists_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var passwordResetToken = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
             .Setup(x => x.GeneratePasswordResetTokenAsync(_user))
-            .ReturnsAsync(PasswordResetToken);
+            .ReturnsAsync(passwordResetToken);
 
         // Act
-        var resetPasswordResponse = await _sut.ResetPassword(Username);
+        var resetPasswordResponse = await _sut.ResetPassword(_user.UserName);
 
         // Assert
         Assert.NotNull(resetPasswordResponse);
         Assert.True(resetPasswordResponse.IsT1);
-        Assert.Equal(PasswordResetToken, resetPasswordResponse.AsT1.Token);
+        Assert.Equal(passwordResetToken, resetPasswordResponse.AsT1.Token);
     }
 
     [Fact]
     public async Task ResetPassword_UserDoesNotExist_ReturnsCorrectResponseType()
     {
+        // Arrange
+        var username = _fixture.Create<string>();
+        var password = _fixture.Create<string>();
+        var passwordResetToken = _fixture.Create<string>();
+
         // Act
-        var result = await _sut.ChangePassword(Username, string.Empty, PasswordResetToken, Password);
+        var result = await _sut.ChangePassword(username, string.Empty, passwordResetToken, password);
 
         // Assert
         Assert.NotNull(result);
@@ -250,31 +281,37 @@ public class AuthServiceTests
     public async Task ResetPassword_IdentityError_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+        var passwordResetToken = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
-            .Setup(x => x.ResetPasswordAsync(_user, PasswordResetToken, Password))
-            .ReturnsAsync(IdentityResult.Failed(Errors));
+            .Setup(x => x.ResetPasswordAsync(_user, passwordResetToken, password))
+            .ReturnsAsync(IdentityResult.Failed(_errors));
 
         // Act
-        var result = await _sut.ChangePassword(Username, string.Empty, PasswordResetToken, Password);
+        var result = await _sut.ChangePassword(_user.UserName, string.Empty, passwordResetToken, password);
 
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsT1);
-        Assert.Equal(Errors, result.AsT1.Errors);
+        Assert.Equal(_errors, result.AsT1.Errors);
     }
 
     [Fact]
     public async Task ResetPassword_Success_ReturnsCorrectResponseType()
     {
         // Arrange
-        _userManagerMock.Setup(x => x.FindByNameAsync(Username)).ReturnsAsync(_user);
+        var password = _fixture.Create<string>();
+        var passwordResetToken = _fixture.Create<string>();
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
-            .Setup(x => x.ResetPasswordAsync(_user, PasswordResetToken, Password))
+            .Setup(x => x.ResetPasswordAsync(_user, passwordResetToken, password))
             .ReturnsAsync(IdentityResult.Success);
 
         // Act
-        var result = await _sut.ChangePassword(Username, string.Empty, PasswordResetToken, Password);
+        var result = await _sut.ChangePassword(_user.UserName, string.Empty, passwordResetToken, password);
 
         // Assert
         Assert.NotNull(result);
