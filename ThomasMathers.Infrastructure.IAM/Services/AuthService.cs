@@ -14,7 +14,10 @@ public interface IAuthService
     Task<ConfirmEmailResponse> ConfirmEmail(string userName, string token);
     Task<LoginResponse> Login(string userName, string password);
     Task<ResetPasswordResponse> ResetPassword(string userName);
-    Task<ChangePasswordResponse> ChangePassword(string userName, string currentPassword, string token,
+    Task<ChangePasswordResponse> ChangePassword(
+        string userName,
+        string currentPassword,
+        string token,
         string newPassword);
 }
 
