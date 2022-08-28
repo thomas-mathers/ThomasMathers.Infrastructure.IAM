@@ -1,7 +1,9 @@
 ﻿using MediatR;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using ThomasMathers.Infrastructure.IAM.Responses;
@@ -30,7 +32,7 @@ public class UserService : IUserService
         DatabaseContext databaseContext,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IMediator mediator, 
+        IMediator mediator,
         ILogger<UserService> logger
     )
     {
@@ -88,24 +90,15 @@ public class UserService : IUserService
         return new RegisterSuccessResponse(user);
     }
 
-    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default)
-    {
-        return _databaseContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken: cancellationToken);
-    }
+    public Task<User?> GetUserById(Guid id, CancellationToken cancellationToken = default) => _databaseContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken: cancellationToken);
 
-    public Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = default)
-    {
-        return _databaseContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-    }
+    public Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = default) => _databaseContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
-    public Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
-    {
-        return _databaseContext.Users.ToListAsync(cancellationToken);
-    }
+    public Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default) => _databaseContext.Users.ToListAsync(cancellationToken);
 
     public Task DeleteUser(User user, CancellationToken cancellationToken = default)
     {
-        _databaseContext.Users.Remove(user);
+        _ = _databaseContext.Users.Remove(user);
         return _databaseContext.SaveChangesAsync(cancellationToken);
     }
 }

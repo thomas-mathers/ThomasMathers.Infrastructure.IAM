@@ -1,8 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Settings;
 
@@ -28,7 +30,7 @@ public class AccessTokenGenerator : IAccessTokenGenerator
 
     public async Task<string> GenerateAccessToken(User user)
     {
-        var userRoles = await _userManager.GetRolesAsync(user); 
+        var userRoles = await _userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
         {

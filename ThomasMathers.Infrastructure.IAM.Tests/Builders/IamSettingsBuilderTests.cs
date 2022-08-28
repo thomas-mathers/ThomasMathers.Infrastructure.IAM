@@ -1,8 +1,11 @@
-﻿using AutoFixture;
-using System.Text.Json;
+﻿using System.Text.Json;
+
+using AutoFixture;
+
 using ThomasMathers.Infrastructure.IAM.Builders;
 using ThomasMathers.Infrastructure.IAM.Settings;
 using ThomasMathers.Infrastructure.IAM.Tests.Helpers;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests.Builders;
@@ -11,10 +14,7 @@ public class IamSettingsBuilderTests
 {
     private readonly Fixture _fixture;
 
-    public IamSettingsBuilderTests() 
-    {
-        _fixture = new Fixture();
-    }
+    public IamSettingsBuilderTests() => _fixture = new Fixture();
 
     [Fact]
     public void Build_ReturnsCorrectValue()

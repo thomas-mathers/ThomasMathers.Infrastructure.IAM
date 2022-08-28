@@ -6,7 +6,7 @@ public static class WebApplicationExtensions
 {
     public static void UseIam(this WebApplication webApplication)
     {
-        webApplication.UseAuthentication();
-        webApplication.UseAuthorization();
+        _ = webApplication.UseAuthentication();
+        _ = webApplication.UseAuthorization();
     }
 }

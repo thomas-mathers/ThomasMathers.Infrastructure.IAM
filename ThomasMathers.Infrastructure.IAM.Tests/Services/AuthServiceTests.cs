@@ -1,13 +1,19 @@
 using System.Linq;
 using System.Threading.Tasks;
+
 using AutoFixture;
+
 using MediatR;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+
 using Moq;
+
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Services;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests.Services;
@@ -70,9 +76,9 @@ public class AuthServiceTests
         // Arrange
         var password = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
-        _signInManagerMock
+        _ = _signInManagerMock
             .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.LockedOut);
 
@@ -90,9 +96,9 @@ public class AuthServiceTests
         // Arrange
         var password = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
-        _signInManagerMock
+        _ = _signInManagerMock
             .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.TwoFactorRequired);
 
@@ -110,9 +116,9 @@ public class AuthServiceTests
         // Arrange
         var password = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
-        _signInManagerMock
+        _ = _signInManagerMock
             .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.NotAllowed);
 
@@ -130,9 +136,9 @@ public class AuthServiceTests
         // Arrange
         var password = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
-        _signInManagerMock
+        _ = _signInManagerMock
             .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.Failed);
 
@@ -151,13 +157,13 @@ public class AuthServiceTests
         var password = _fixture.Create<string>();
         var accessToken = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
 
-        _signInManagerMock
+        _ = _signInManagerMock
             .Setup(x => x.CheckPasswordSignInAsync(_user, password, It.IsAny<bool>()))
             .ReturnsAsync(SignInResult.Success);
 
-        _accessTokenGeneratorMock.Setup(x => x.GenerateAccessToken(_user))
+        _ = _accessTokenGeneratorMock.Setup(x => x.GenerateAccessToken(_user))
             .ReturnsAsync(accessToken);
 
         // Act
@@ -192,8 +198,8 @@ public class AuthServiceTests
         var password = _fixture.Create<string>();
         var errors = _fixture.CreateMany<IdentityError>().ToArray();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
-        _userManagerMock
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock
             .Setup(x => x.ChangePasswordAsync(_user, password, password))
             .ReturnsAsync(IdentityResult.Failed(errors));
 
@@ -212,8 +218,8 @@ public class AuthServiceTests
         // Arrange
         var password = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
-        _userManagerMock
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock
             .Setup(x => x.ChangePasswordAsync(_user, password, password))
             .ReturnsAsync(IdentityResult.Success);
 
@@ -245,8 +251,8 @@ public class AuthServiceTests
         // Arrange
         var passwordResetToken = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
-        _userManagerMock
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock
             .Setup(x => x.GeneratePasswordResetTokenAsync(_user))
             .ReturnsAsync(passwordResetToken);
 
@@ -283,8 +289,8 @@ public class AuthServiceTests
         var passwordResetToken = _fixture.Create<string>();
         var errors = _fixture.CreateMany<IdentityError>().ToArray();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
-        _userManagerMock
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock
             .Setup(x => x.ResetPasswordAsync(_user, passwordResetToken, password))
             .ReturnsAsync(IdentityResult.Failed(errors));
 
@@ -304,8 +310,8 @@ public class AuthServiceTests
         var password = _fixture.Create<string>();
         var passwordResetToken = _fixture.Create<string>();
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
-        _userManagerMock
+        _ = _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
+        _ = _userManagerMock
             .Setup(x => x.ResetPasswordAsync(_user, passwordResetToken, password))
             .ReturnsAsync(IdentityResult.Success);
 

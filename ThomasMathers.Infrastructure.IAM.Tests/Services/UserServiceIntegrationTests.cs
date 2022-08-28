@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using AutoFixture;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Services;
 using ThomasMathers.Infrastructure.IAM.Tests.Comparers;
 using ThomasMathers.Infrastructure.IAM.Tests.Helpers;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests.Services;
@@ -32,7 +36,7 @@ public class UserServiceIntegrationTests
         );
 
         _role = _fixture.Create<Role>();
-        
+
         var serviceProvider = ServiceProviderBuilder.Build();
 
         _roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
@@ -49,7 +53,7 @@ public class UserServiceIntegrationTests
     {
         // Arrange
         var user = _fixture.Create<User>();
-        
+
         user.Email = email;
 
         var expectedErrors = new List<IdentityError>
@@ -77,7 +81,7 @@ public class UserServiceIntegrationTests
     {
         // Arrange
         var user = _fixture.Create<User>();
-        
+
         user.UserName = username;
 
         var expectedErrors = new List<IdentityError>
@@ -110,7 +114,7 @@ public class UserServiceIntegrationTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        await _userManager.CreateAsync(user, password);
+        _ = await _userManager.CreateAsync(user, password);
 
         var expectedErrors = new List<IdentityError>
         {
@@ -146,7 +150,7 @@ public class UserServiceIntegrationTests
             }
         };
 
-        await _userManager.CreateAsync(user1, Password);
+        _ = await _userManager.CreateAsync(user1, Password);
 
         // Act
         var registerResponse = await _sut.Register(user2, _role.Name, Password);
@@ -163,7 +167,7 @@ public class UserServiceIntegrationTests
         // Arrange
         var user1 = _fixture.Create<User>();
         var user2 = _fixture.Create<User>();
-        
+
         user2.Email = user1.Email;
 
         var expectedErrors = new List<IdentityError>
@@ -174,7 +178,7 @@ public class UserServiceIntegrationTests
             }
         };
 
-        await _userManager.CreateAsync(user1, Password);
+        _ = await _userManager.CreateAsync(user1, Password);
 
         // Act
         var registerResponse = await _sut.Register(user2, _role.Name, Password);
@@ -205,7 +209,7 @@ public class UserServiceIntegrationTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        await _roleManager.CreateAsync(_role);
+        _ = await _roleManager.CreateAsync(_role);
 
         // Act
         var registerResponse = await _sut.Register(user, _role.Name, Password);
@@ -221,7 +225,7 @@ public class UserServiceIntegrationTests
         // Arrange
         var user = _fixture.Create<User>();
 
-        await _userManager.CreateAsync(user, Password);
+        _ = await _userManager.CreateAsync(user, Password);
 
         // Act
         var actual = await _sut.GetUserById(user.Id);
@@ -253,8 +257,8 @@ public class UserServiceIntegrationTests
         var user1 = _fixture.Create<User>();
         var user2 = _fixture.Create<User>();
 
-        await _userManager.CreateAsync(user1, Password);
-        await _userManager.CreateAsync(user2, Password);
+        _ = await _userManager.CreateAsync(user1, Password);
+        _ = await _userManager.CreateAsync(user2, Password);
 
         // Act
         var actual = await _sut.GetAllUsers();
@@ -275,7 +279,7 @@ public class UserServiceIntegrationTests
     {
         // Arrange
         var user = _fixture.Create<User>();
-        await _userManager.CreateAsync(user, Password);
+        _ = await _userManager.CreateAsync(user, Password);
 
         // Act
         await _sut.DeleteUser(user);

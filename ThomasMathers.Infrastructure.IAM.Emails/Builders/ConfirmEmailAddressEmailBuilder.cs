@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+
 using ThomasMathers.Infrastructure.Email;
 using ThomasMathers.Infrastructure.IAM.Emails.Emails;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
@@ -15,10 +16,7 @@ public class ConfirmEmailAddressEmailBuilder : IConfirmEmailAddressEmailBuilder
 {
     private readonly ConfirmEmailAddressEmailSettings _emailSettings;
 
-    public ConfirmEmailAddressEmailBuilder(ConfirmEmailAddressEmailSettings emailSettings)
-    {
-        _emailSettings = emailSettings;
-    }
+    public ConfirmEmailAddressEmailBuilder(ConfirmEmailAddressEmailSettings emailSettings) => _emailSettings = emailSettings;
 
     public TemplateEmailMessage<ConfirmEmailAddressEmail> Build(UserRegisteredNotification notification)
     {

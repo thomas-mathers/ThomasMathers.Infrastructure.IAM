@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
+
 using ThomasMathers.Infrastructure.IAM.Settings;
 
 namespace ThomasMathers.Infrastructure.IAM.Mappers;
 
 public class UserOptionsMapper
 {
-    public static UserOptions Map(UserSettings source)
+    public static UserOptions Map(UserSettings source) => new()
     {
-        return new UserOptions
-        {
-            RequireUniqueEmail = source.RequireUniqueEmail,
-            AllowedUserNameCharacters = source.AllowedUserNameCharacters
-        };
-    }
+        RequireUniqueEmail = source.RequireUniqueEmail,
+        AllowedUserNameCharacters = source.AllowedUserNameCharacters
+    };
 }

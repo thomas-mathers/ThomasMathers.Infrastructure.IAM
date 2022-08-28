@@ -1,12 +1,17 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Identity;
-using Moq;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+
+using AutoFixture;
+
+using Microsoft.AspNetCore.Identity;
+
+using Moq;
+
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Services;
 using ThomasMathers.Infrastructure.IAM.Settings;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests.Services;
@@ -37,7 +42,7 @@ public class AccessTokenGeneratorTests
         var user = _fixture.Create<User>();
         var userRoles = _fixture.CreateMany<string>().ToList();
 
-        _userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(userRoles);
+        _ = _userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(userRoles);
 
         // Act
         var encodedToken = await _sut.GenerateAccessToken(user);

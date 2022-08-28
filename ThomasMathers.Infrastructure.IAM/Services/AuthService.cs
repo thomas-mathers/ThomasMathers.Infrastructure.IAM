@@ -1,6 +1,8 @@
 ﻿using MediatR;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Notifications;
 using ThomasMathers.Infrastructure.IAM.Responses;
@@ -25,7 +27,7 @@ public class AuthService : IAuthService
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
-        SignInManager<User> signInManager, 
+        SignInManager<User> signInManager,
         UserManager<User> userManager,
         IAccessTokenGenerator accessTokenGenerator,
         IMediator mediator,

@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using System.Text;
+
 using MediatR;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+
 using ThomasMathers.Infrastructure.IAM.Builders;
 using ThomasMathers.Infrastructure.IAM.Data.EF;
 using ThomasMathers.Infrastructure.IAM.Mappers;
@@ -18,38 +21,27 @@ namespace ThomasMathers.Infrastructure.IAM.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddIam(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddIam(configuration.GetRequiredSection("IamSettings"));
-    }
+    public static void AddIam(this IServiceCollection services, IConfiguration configuration) => services.AddIam(configuration.GetRequiredSection("IamSettings"));
 
-    public static void AddIam(this IServiceCollection services, IConfigurationSection configurationSection)
-    {
-        services.AddIam(IamSettingsBuilder.Build(configurationSection));
-    }
+    public static void AddIam(this IServiceCollection services, IConfigurationSection configurationSection) => services.AddIam(IamSettingsBuilder.Build(configurationSection));
 
     public static void AddIam(this IServiceCollection services, IamSettings iamSettings)
     {
-        services.AddMediatR(GetMediatorAssemblies());
-        services.AddLogging();
+        _ = services.AddMediatR(GetMediatorAssemblies());
+        _ = services.AddLogging();
 
-        if (string.IsNullOrEmpty(iamSettings.ConnectionString))
-        {
-            services.AddDbContext<DatabaseContext>(optionsBuilder =>
+        _ = string.IsNullOrEmpty(iamSettings.ConnectionString)
+            ? services.AddDbContext<DatabaseContext>(optionsBuilder =>
             {
-                optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-                optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-            });
-        }
-        else
-        {
-            services.AddDbContext<DatabaseContext>(optionsBuilder =>
+                _ = optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
+                _ = optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            })
+            : services.AddDbContext<DatabaseContext>(optionsBuilder =>
             {
-                optionsBuilder.UseSqlServer(iamSettings.ConnectionString, options => options.MigrationsAssembly(iamSettings.MigrationsAssembly));
+                _ = optionsBuilder.UseSqlServer(iamSettings.ConnectionString, options => options.MigrationsAssembly(iamSettings.MigrationsAssembly));
             });
-        }
 
-        services
+        _ = services
             .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,9 +63,9 @@ public static class ServiceCollectionExtensions
                 };
             });
 
-        services.AddAuthorization();
+        _ = services.AddAuthorization();
 
-        services
+        _ = services
             .AddIdentity<User, Role>(options =>
             {
                 options.User = UserOptionsMapper.Map(iamSettings.UserSettings);
@@ -82,17 +74,14 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IAccessTokenGenerator, AccessTokenGenerator>();
-        services.AddScoped(_ => iamSettings);
-        services.AddScoped(_ => iamSettings.UserSettings);
-        services.AddScoped(_ => iamSettings.PasswordSettings);
-        services.AddScoped(_ => iamSettings.JwtTokenSettings);
+        _ = services.AddScoped<IAuthService, AuthService>();
+        _ = services.AddScoped<IUserService, UserService>();
+        _ = services.AddScoped<IAccessTokenGenerator, AccessTokenGenerator>();
+        _ = services.AddScoped(_ => iamSettings);
+        _ = services.AddScoped(_ => iamSettings.UserSettings);
+        _ = services.AddScoped(_ => iamSettings.PasswordSettings);
+        _ = services.AddScoped(_ => iamSettings.JwtTokenSettings);
     }
 
-    private static Assembly[] GetMediatorAssemblies()
-    {
-        return AppDomain.CurrentDomain.GetAssemblies();
-    }
+    private static Assembly[] GetMediatorAssemblies() => AppDomain.CurrentDomain.GetAssemblies();
 }

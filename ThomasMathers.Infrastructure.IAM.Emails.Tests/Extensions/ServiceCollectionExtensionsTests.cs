@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+
 using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Emails.Extensions;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Emails.Tests.Extensions;

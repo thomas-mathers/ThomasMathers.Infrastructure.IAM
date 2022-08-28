@@ -1,8 +1,11 @@
 ﻿using AutoFixture;
+
 using Microsoft.AspNetCore.WebUtilities;
+
 using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
 using ThomasMathers.Infrastructure.IAM.Notifications;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Emails.Tests.Builders;

@@ -1,7 +1,6 @@
-﻿namespace ThomasMathers.Infrastructure.IAM.Social.Facebook.Models
+﻿namespace ThomasMathers.Infrastructure.IAM.Social.Providers.Facebook.Models;
+
+public class FacebookPicture
 {
-    public class FacebookPicture
-    {
-        public FacebookPictureData Data { get; init; } = new FacebookPictureData();
-    }
+    public FacebookPictureData Data { get; init; } = new FacebookPictureData();
 }

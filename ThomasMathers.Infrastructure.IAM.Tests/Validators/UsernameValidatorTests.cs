@@ -1,5 +1,6 @@
 ﻿using ThomasMathers.Infrastructure.IAM.Settings;
 using ThomasMathers.Infrastructure.IAM.Tests.MockObjects;
+
 using Xunit;
 
 namespace ThomasMathers.Infrastructure.IAM.Tests.Validators;

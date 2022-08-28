@@ -1,5 +1,7 @@
 ﻿using MediatR;
+
 using Microsoft.Extensions.Logging;
+
 using ThomasMathers.Infrastructure.Email.Services;
 using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Notifications;
@@ -14,8 +16,8 @@ public class UserRegisteredNotificationHandler : INotificationHandler<UserRegist
 
     public UserRegisteredNotificationHandler
     (
-        IEmailService emailService, 
-        IConfirmEmailAddressEmailBuilder emailSettings, 
+        IEmailService emailService,
+        IConfirmEmailAddressEmailBuilder emailSettings,
         ILogger<UserRegisteredNotificationHandler> logger
     )
     {

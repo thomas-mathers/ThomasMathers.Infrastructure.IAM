@@ -1,5 +1,7 @@
 ﻿using MediatR;
+
 using Microsoft.Extensions.Logging;
+
 using ThomasMathers.Infrastructure.Email.Services;
 using ThomasMathers.Infrastructure.IAM.Emails.Builders;
 using ThomasMathers.Infrastructure.IAM.Notifications;

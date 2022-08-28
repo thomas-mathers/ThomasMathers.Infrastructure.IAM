@@ -1,5 +1,7 @@
 ﻿using System;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using ThomasMathers.Infrastructure.IAM.Extensions;
 using ThomasMathers.Infrastructure.IAM.Settings;
 

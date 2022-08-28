@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+
 using ThomasMathers.Infrastructure.Email;
 using ThomasMathers.Infrastructure.IAM.Emails.Emails;
 using ThomasMathers.Infrastructure.IAM.Emails.Settings;
@@ -15,10 +16,7 @@ public class ResetPasswordEmailBuilder : IResetPasswordEmailBuilder
 {
     private readonly ResetPasswordEmailSettings _emailSettings;
 
-    public ResetPasswordEmailBuilder(ResetPasswordEmailSettings emailSettings)
-    {
-        _emailSettings = emailSettings;
-    }
+    public ResetPasswordEmailBuilder(ResetPasswordEmailSettings emailSettings) => _emailSettings = emailSettings;
 
     public TemplateEmailMessage<ResetPasswordEmail> Build(ResetPasswordNotification notification)
     {

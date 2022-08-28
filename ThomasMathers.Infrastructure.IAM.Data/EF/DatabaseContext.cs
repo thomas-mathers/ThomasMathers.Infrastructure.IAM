@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ThomasMathers.Infrastructure.IAM.Data.EF;
 
-public class DatabaseContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, IdentityUserRole<Guid>, UserLogin, IdentityRoleClaim<Guid>, IdentityUserToken<Guid> >
+public class DatabaseContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, IdentityUserRole<Guid>, UserLogin, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
     public DatabaseContext()
     {
@@ -19,7 +19,7 @@ public class DatabaseContext : IdentityDbContext<User, Role, Guid, IdentityUserC
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<SocialMediaProfile>().HasKey(x => x.Id);
+        _ = builder.Entity<SocialMediaProfile>().HasKey(x => x.Id);
     }
 
     public DbSet<SocialMediaProfile> SocialMediaProfiles { get; set; } = null!;
