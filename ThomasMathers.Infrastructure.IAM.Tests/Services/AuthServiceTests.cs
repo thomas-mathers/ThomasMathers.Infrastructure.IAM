@@ -16,7 +16,6 @@ public class AuthServiceTests
 {
     private readonly Fixture _fixture;
     private readonly User _user;
-    private readonly IdentityError[] _errors;
 
     private readonly Mock<SignInManager<User>> _signInManagerMock;
     private readonly Mock<UserManager<User>> _userManagerMock;
@@ -28,7 +27,6 @@ public class AuthServiceTests
     {
         _fixture = new Fixture();
         _user = _fixture.Create<User>();
-        _errors = _fixture.CreateMany<IdentityError>().ToArray();
 
         _userManagerMock = new Mock<UserManager<User>>(
             Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null
@@ -193,11 +191,12 @@ public class AuthServiceTests
     {
         // Arrange
         var password = _fixture.Create<string>();
+        var errors = _fixture.CreateMany<IdentityError>().ToArray();
 
         _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
             .Setup(x => x.ChangePasswordAsync(_user, password, password))
-            .ReturnsAsync(IdentityResult.Failed(_errors));
+            .ReturnsAsync(IdentityResult.Failed(errors));
 
         // Act
         var result = await _sut.ChangePassword(_user.UserName, password, string.Empty, password);
@@ -205,7 +204,7 @@ public class AuthServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsT1);
-        Assert.Equal(_errors, result.AsT1.Errors);
+        Assert.Equal(errors, result.AsT1.Errors);
     }
 
     [Fact]
@@ -283,11 +282,12 @@ public class AuthServiceTests
         // Arrange
         var password = _fixture.Create<string>();
         var passwordResetToken = _fixture.Create<string>();
+        var errors = _fixture.CreateMany<IdentityError>().ToArray();
 
         _userManagerMock.Setup(x => x.FindByNameAsync(_user.UserName)).ReturnsAsync(_user);
         _userManagerMock
             .Setup(x => x.ResetPasswordAsync(_user, passwordResetToken, password))
-            .ReturnsAsync(IdentityResult.Failed(_errors));
+            .ReturnsAsync(IdentityResult.Failed(errors));
 
         // Act
         var result = await _sut.ChangePassword(_user.UserName, string.Empty, passwordResetToken, password);
@@ -295,7 +295,7 @@ public class AuthServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsT1);
-        Assert.Equal(_errors, result.AsT1.Errors);
+        Assert.Equal(errors, result.AsT1.Errors);
     }
 
     [Fact]
