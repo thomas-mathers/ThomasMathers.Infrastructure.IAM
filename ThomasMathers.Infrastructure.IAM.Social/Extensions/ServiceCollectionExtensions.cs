@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ThomasMathers.Infrastructure.IAM.Social.Facebook;
 using ThomasMathers.Infrastructure.IAM.Social.Google;
-using ThomasMathers.Infrastructure.IAM.Social.Services;
 
 namespace ThomasMathers.Infrastructure.IAM.Social.Extensions
 {

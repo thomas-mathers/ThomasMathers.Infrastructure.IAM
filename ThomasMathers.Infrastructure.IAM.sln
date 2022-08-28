@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThomasMathers.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThomasMathers.Infrastructure.IAM.Emails.Tests", "ThomasMathers.Infrastructure.IAM.Emails.Tests\ThomasMathers.Infrastructure.IAM.Emails.Tests.csproj", "{C975AF16-FC4C-43A5-ABB8-B2BE2FBCAC3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThomasMathers.Infrastructure.IAM.Social", "ThomasMathers.Infrastructure.IAM.Social\ThomasMathers.Infrastructure.IAM.Social.csproj", "{52D312EC-71A0-47B3-84E3-354D9016356A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThomasMathers.Infrastructure.IAM.Social", "ThomasMathers.Infrastructure.IAM.Social\ThomasMathers.Infrastructure.IAM.Social.csproj", "{52D312EC-71A0-47B3-84E3-354D9016356A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThomasMathers.Infrastructure.IAM.Data", "ThomasMathers.Infrastructure.IAM.Data\ThomasMathers.Infrastructure.IAM.Data.csproj", "{BA4A7E73-7108-4CCA-83A7-A22669214E7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThomasMathers.Infrastructure.Common", "ThomasMathers.Infrastructure.Common\ThomasMathers.Infrastructure.Common.csproj", "{01872730-EBC5-42FE-A311-1593B340B1C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{52D312EC-71A0-47B3-84E3-354D9016356A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D312EC-71A0-47B3-84E3-354D9016356A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D312EC-71A0-47B3-84E3-354D9016356A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA4A7E73-7108-4CCA-83A7-A22669214E7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA4A7E73-7108-4CCA-83A7-A22669214E7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA4A7E73-7108-4CCA-83A7-A22669214E7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA4A7E73-7108-4CCA-83A7-A22669214E7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01872730-EBC5-42FE-A311-1593B340B1C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01872730-EBC5-42FE-A311-1593B340B1C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01872730-EBC5-42FE-A311-1593B340B1C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01872730-EBC5-42FE-A311-1593B340B1C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿using ThomasMathers.Infrastructure.IAM.Data;
+﻿using ThomasMathers.Infrastructure.IAM.Data.EF;
 
 namespace ThomasMathers.Infrastructure.IAM.Responses;
 

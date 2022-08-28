@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ThomasMathers.Infrastructure.IAM.Social\ThomasMathers.Infrastructure.IAM.Social.csproj" />
+    <ProjectReference Include="..\ThomasMathers.Infrastructure.IAM.Data\ThomasMathers.Infrastructure.IAM.Data.csproj" />
   </ItemGroup>
 
 </Project>
