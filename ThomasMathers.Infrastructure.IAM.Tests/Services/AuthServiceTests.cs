@@ -22,7 +22,6 @@ public class AuthServiceTests
     private readonly Mock<IAccessTokenGenerator> _accessTokenGeneratorMock;
     private readonly AuthService _sut;
 
-
     public AuthServiceTests()
     {
         _fixture = new Fixture();

@@ -1,8 +1,6 @@
 ﻿using AutoFixture;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,12 +35,13 @@ public class AccessTokenGeneratorTests
     {
         // Arrange
         var user = _fixture.Create<User>();
-        var roles = _fixture.CreateMany<string>().ToList();
-        _userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(roles);
+        var userRoles = _fixture.CreateMany<string>().ToList();
+
+        _userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(userRoles);
 
         // Act
         var encodedToken = await _sut.GenerateAccessToken(user);
-        var decodedToken = DecodeToken(encodedToken);
+        var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(encodedToken);
 
         // Assert
         Assert.Equal(_jwtTokenSettings.Issuer, decodedToken.Issuer);
@@ -50,25 +49,22 @@ public class AccessTokenGeneratorTests
         Assert.Equal(_jwtTokenSettings.Audience, decodedToken.Audiences.First());
 
         var nameClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == "name");
+
         Assert.NotNull(nameClaim);
         Assert.Equal(user.UserName, nameClaim.Value);
 
         var nameidClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == "nameid");
+
         Assert.NotNull(nameidClaim);
         Assert.Equal(user.Id.ToString(), nameidClaim.Value);
 
         var roleClaimValues = decodedToken.Claims.Where(x => x.Type == "role").Select(x => x.Value).ToList();
 
-        Assert.Equal(roles, roleClaimValues);
+        Assert.Equal(userRoles, roleClaimValues);
 
         var emailClaim = decodedToken.Claims.FirstOrDefault(x => x.Type == "email");
 
         Assert.NotNull(emailClaim);
         Assert.Equal(user.Email, emailClaim.Value);
-    }
-
-    private static JwtSecurityToken DecodeToken(string encodedToken)
-    {
-        return new JwtSecurityTokenHandler().ReadJwtToken(encodedToken);
     }
 }

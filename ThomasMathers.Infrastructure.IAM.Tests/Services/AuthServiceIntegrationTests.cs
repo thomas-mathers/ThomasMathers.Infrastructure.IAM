@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoFixture;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using ThomasMathers.Infrastructure.IAM.Data.EF;
@@ -12,16 +14,25 @@ namespace ThomasMathers.Infrastructure.IAM.Tests.Services;
 
 public class AuthServiceIntegrationTests
 {
-    private const string Username = "tmathers";
-    private const string Email = "thomas.mathers.pro@gmail.com";
     private const string Password1 = "P@sSw0rd1!";
     private const string Password2 = "P@sSw0rd2!";
-    private readonly IAuthService _sut;
-    private readonly User _user = new() { UserName = Username, Email = Email };
+    private readonly Fixture _fixture;
+    private readonly User _user;
     private readonly UserManager<User> _userManager;
+    private readonly IAuthService _sut;
 
     public AuthServiceIntegrationTests()
     {
+        _fixture = new Fixture();
+        _fixture.Customize<User>(composer =>
+            composer.OmitAutoProperties()
+            .With(u => u.Id)
+            .With(u => u.UserName)
+            .With(u => u.Email, () => $"{Guid.NewGuid()}@{Guid.NewGuid()}.com")
+        );
+
+        _user = _fixture.Create<User>();
+
         var serviceProvider = ServiceProviderBuilder.Build();
 
         _userManager = serviceProvider.GetRequiredService<UserManager<User>>();
@@ -32,7 +43,7 @@ public class AuthServiceIntegrationTests
     public async Task Login_UserDoesNotExist_ReturnsNotFoundResponse()
     {
         // Act
-        var loginResponse = await _sut.Login(Username, Password1);
+        var loginResponse = await _sut.Login(_user.UserName, Password1);
 
         // Assert
         Assert.NotNull(loginResponse);
@@ -46,7 +57,7 @@ public class AuthServiceIntegrationTests
         await _userManager.CreateAsync(_user, Password2);
 
         // Act
-        var loginResponse = await _sut.Login(Username, Password1);
+        var loginResponse = await _sut.Login(_user.UserName, Password1);
 
         // Assert
         Assert.NotNull(loginResponse);
@@ -61,11 +72,11 @@ public class AuthServiceIntegrationTests
 
         for (var i = 0; i < 5; i++)
         {
-            await _sut.Login(Username, Password1);
+            await _sut.Login(_user.UserName, Password1);
         }
 
         // Act
-        var loginResponse = await _sut.Login(Username, Password1);
+        var loginResponse = await _sut.Login(_user.UserName, Password1);
 
         // Assert
         Assert.NotNull(loginResponse);
@@ -79,7 +90,7 @@ public class AuthServiceIntegrationTests
         await _userManager.CreateAsync(_user, Password1);
 
         // Act
-        var loginResponse = await _sut.Login(Username, Password1);
+        var loginResponse = await _sut.Login(_user.UserName, Password1);
 
         // Assert
         Assert.NotNull(loginResponse);
@@ -91,7 +102,7 @@ public class AuthServiceIntegrationTests
     {
         // Act
         var changePassword = await _sut.ChangePassword(
-            Username,
+            _user.UserName,
             Password1,
             string.Empty,
             Password2);
@@ -108,7 +119,7 @@ public class AuthServiceIntegrationTests
         await _userManager.CreateAsync(_user, Password1);
 
         // Act
-        var changePassword = await _sut.ChangePassword(Username, Password2, string.Empty, Password2);
+        var changePassword = await _sut.ChangePassword(_user.UserName, Password2, string.Empty, Password2);
 
         // Assert
         Assert.NotNull(changePassword);
@@ -137,7 +148,7 @@ public class AuthServiceIntegrationTests
         };
 
         // Act
-        var changePassword = await _sut.ChangePassword(Username, Password1, string.Empty, newPassword);
+        var changePassword = await _sut.ChangePassword(_user.UserName, Password1, string.Empty, newPassword);
 
         // Assert
         Assert.NotNull(changePassword);
@@ -153,7 +164,7 @@ public class AuthServiceIntegrationTests
         await _userManager.CreateAsync(_user, Password1);
 
         // Act
-        var changePassword = await _sut.ChangePassword(Username, Password1, string.Empty, newPassword);
+        var changePassword = await _sut.ChangePassword(_user.UserName, Password1, string.Empty, newPassword);
 
         // Assert
         Assert.NotNull(changePassword);
@@ -167,7 +178,7 @@ public class AuthServiceIntegrationTests
         await _userManager.CreateAsync(_user, Password1);
 
         // Act
-        var resetPasswordResponse = await _sut.ResetPassword(Username);
+        var resetPasswordResponse = await _sut.ResetPassword(_user.UserName);
 
         // Assert
         Assert.NotNull(resetPasswordResponse);
@@ -180,7 +191,7 @@ public class AuthServiceIntegrationTests
     public async Task ResetPassword_UserDoesNotExist_ReturnsNotFoundResponse()
     {
         // Act
-        var resetPassword = await _sut.ChangePassword(Username, string.Empty, string.Empty, Password2);
+        var resetPassword = await _sut.ChangePassword(_user.UserName, string.Empty, string.Empty, Password2);
 
         // Assert
         Assert.NotNull(resetPassword);
@@ -204,7 +215,7 @@ public class AuthServiceIntegrationTests
         };
 
         // Act
-        var resetPassword = await _sut.ChangePassword(Username, string.Empty, token, Password2);
+        var resetPassword = await _sut.ChangePassword(_user.UserName, string.Empty, token, Password2);
 
         // Assert
         Assert.NotNull(resetPassword);
@@ -236,7 +247,7 @@ public class AuthServiceIntegrationTests
         };
 
         // Act
-        var resetPassword = await _sut.ChangePassword(Username, string.Empty, token, newPassword);
+        var resetPassword = await _sut.ChangePassword(_user.UserName, string.Empty, token, newPassword);
 
         // Assert
         Assert.NotNull(resetPassword);
@@ -252,7 +263,7 @@ public class AuthServiceIntegrationTests
         var token = await _userManager.GeneratePasswordResetTokenAsync(_user);
 
         // Act
-        var resetPassword = await _sut.ChangePassword(Username, string.Empty, token, Password2);
+        var resetPassword = await _sut.ChangePassword(_user.UserName, string.Empty, token, Password2);
 
         // Assert
         Assert.NotNull(resetPassword);
