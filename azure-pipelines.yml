@@ -2,8 +2,6 @@ variables:
   majorVersion: '1'
   minorVersion: '3'
   buildConfiguration: 'Release'
-  projectName: 'ThomasMathers.Infrastructure.IAM'
-  testProjectName: 'ThomasMathers.Infrastructure.IAM.Tests'
 
 name: '$(majorVersion).$(minorVersion).$(Rev:r)'
 
@@ -11,32 +9,22 @@ trigger:
   branches:
     include:
       - master
-  paths:
-    include:
-      - $(projectName)
-      - $(testProjectName)
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
-    projects: '$(projectName)/$(projectName).csproj'
-- task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
     arguments: '--configuration $(buildConfiguration)'
-    projects: '$(testProjectName)/$(testProjectName).csproj'
-- task: NuGetCommand@2
-  displayName: 'NuGet pack'
+    projects: '**/*.csproj'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
   inputs:
     command: 'pack'
-    packagesToPack: '$(projectName)/$(projectName).csproj'
+    packagesToPack: '**/*.csproj'
     versioningScheme: 'byBuildNumber'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifact'
