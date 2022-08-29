@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.2.0" />
+    <PackageReference Include="FluentValidation" Version="11.2.1" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
@@ -25,10 +25,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="OneOf" Version="3.0.223" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.223" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ThomasMathers.Infrastructure.IAM.Data\ThomasMathers.Infrastructure.IAM.Data.csproj" />
+    <PackageReference Include="ThomasMathers.Infrastructure.IAM.Data" Version="1.0.2" />
   </ItemGroup>
 
 </Project>
